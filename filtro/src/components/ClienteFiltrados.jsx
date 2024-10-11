@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./ClientesFiltrados.css"; // Estilos externos
 import FormularioCliente from "./FormularioCliente";
+import * as XLSX from "xlsx";
+import Swal from "sweetalert2";
+import Navbar from "./Navbar";
 
 const ClientesFiltrados = () => {
   const [loading, setLoading] = useState(false);
@@ -10,7 +13,7 @@ const ClientesFiltrados = () => {
   const [clientes, setClientes] = useState([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null); // Almacena el cliente seleccionado para editar
   const [mostrarModal, setMostrarModal] = useState(false);
-
+  const [clienteEliminado, setClienteEliminar] = useState(null);
   const [filters, setFilters] = useState({
     id_sucursal: "",
     nombre_cliente: "",
@@ -20,6 +23,49 @@ const ClientesFiltrados = () => {
     fecha_hasta: "",
     rut_cliente: "",
   });
+  const token = localStorage.getItem("token");
+  /* console.log(token) */
+  if (!token) {
+    alert("No se encontró el token de autenticación. Inicia sesión.");
+    return;
+  }
+  // Validaciones
+  const [errores, setErrores] = useState({});
+
+  const [errorEditar, seterrorEditar] = useState({}); ///////////////////////////////////////////////////
+
+  const validarEmail = (email) => {
+    const regex = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
+  };
+  const validarNombre = (nombre) => {
+    const regex = /^[a-zA-Zñ��áéíóúÁÉÍÓ��\s]+$/;
+    return regex.test(nombre);
+  };
+  const validarRut = (rut) => {
+    const regex = /^[0-9]{7,8}-[0-9Kk]{1}$/;
+    return regex.test(rut);
+  };
+  const validarSucursal = (sucursal) => {
+    const regex = /^[0-9]+$/;
+    return regex.test(sucursal);
+  };
+  const validarTelefono = (telefono) => {
+    const regex = /^(\+56)?9[0-9]{8}$/;
+    return regex.test(telefono);
+  };
+  const validarFechaDesde = (fecha) => {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    return regex.test(fecha);
+  };
+
+  const validarFechaHasta = (fecha) => {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    return regex.test(fecha);
+  };
+  const validarRangoFechas = (fechaDesde, fechaHasta) => {
+    return new Date(fechaDesde) <= new Date(fechaHasta);
+  };
 
   const limpiarfiltros = () => {
     setFilters({
@@ -47,26 +93,144 @@ const ClientesFiltrados = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    const nuevosErrores = {};
 
-    try {
+    // Validaciones
+    if (filters.id_sucursal && !validarSucursal(filters.id_sucursal)) {
+      nuevosErrores.id_sucursal = "Sucursal inválido. Solo tipo número";
+    }
+    if (filters.nombre_cliente && !validarNombre(filters.nombre_cliente)) {
+      nuevosErrores.nombre_cliente = "Nombre inválido. Solo tipo texto";
+    }
+    if (filters.fecha_desde && !validarFechaDesde(filters.fecha_desde)) {
+      nuevosErrores.fecha_desde = "Fecha inválido. Debe ser formato fecha";
+    }
+    if (filters.fecha_hasta && !validarFechaHasta(filters.fecha_hasta)) {
+      nuevosErrores.fecha_hasta = "Fecha inválido. Debe ser formato fecha";
+    }
+    if (
+      filters.fecha_desde &&
+      filters.fecha_hasta &&
+      !validarRangoFechas(filters.fecha_desde, filters.fecha_hasta)
+    ) {
+      nuevosErrores.rango_fechas =
+        "La fecha 'desde' no puede ser mayor que la fecha 'hasta'.";
+    }
+    if (filters.email_cliente && !validarEmail(filters.email_cliente)) {
+      nuevosErrores.email_cliente = "Email inválido. Debe ser formato email";
+    }
+    if (
+      filters.telefono_cliente &&
+      !validarTelefono(filters.telefono_cliente)
+    ) {
+      nuevosErrores.telefono_cliente =
+        "Teléfono inválido. Debe tener 9 dígitos";
+    }
+    if (filters.rut_cliente && !validarRut(filters.rut_cliente)) {
+      nuevosErrores.rut_cliente = "RUT inválido. Debe ser formato rut";
+    }
+
+    if (Object.keys(nuevosErrores).length > 0) {
+      setErrores(nuevosErrores);
+      setLoading(false);
+      return;
+    }
+
+    // Formatear las fechas
+    const fechaDesdeFormateada = filters.fecha_desde
+      ? new Date(filters.fecha_desde).toISOString().split("T")[0]
+      : "";
+    const fechaHastaFormateada = filters.fecha_hasta
+      ? new Date(filters.fecha_hasta).toISOString().split("T")[0]
+      : "";
+      
+      try {
+  if(filters.email_cliente ===""&& filters.rut_cliente===""&&filters.id_sucursal===""&&filters.nombre_cliente===""&&filters.fecha_desde===""&&filters.fecha_hasta===""&&filters.telefono_cliente===""){
+    return Swal.fire({
+      title: '¡Error!',
+      text: "Debes colocar valores para poder filtrar",
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+    });
+  }
       const { data } = await axios.get(
         "http://localhost:3000/api/clients/filtro",
         {
-          params: filters,
+          params: {
+            ...filters,
+            fecha_desde: fechaDesdeFormateada,
+            fecha_hasta: fechaHastaFormateada,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`, // Asegúrate de incluir el token aquí
+          },
         }
       );
       setClientes(data.detail);
-      console.log(data.detail);
     } catch (err) {
       setError("Error al obtener los datos de clientes.");
     } finally {
       setLoading(false);
     }
   };
+  // Función para generar el archivo Excel
+  const exportarExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(clientes);
+
+    // Formatear encabezados
+    const encabezados = Object.keys(clientes[0]);
+    XLSX.utils.sheet_add_aoa(ws, [encabezados], { origin: "A1" });
+
+    // Ajuste automático de las columnas
+    const columnas = Object.keys(clientes[0]).map((key) => ({
+      wch: Math.max(
+        key.length,
+        ...clientes.map((c) => (c[key] ? c[key].toString().length : 0))
+      ),
+    }));
+    ws["!cols"] = columnas;
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Clientes");
+
+    // Estilo básico (opcional, más detalles en la documentación de XLSX)
+    ws["A1"].s = {
+      font: { bold: true },
+      alignment: { horizontal: "center" },
+    };
+
+    XLSX.writeFile(wb, "clientes.xlsx");
+  };
+
   const abrirModalEdicion = (cliente) => {
     setClienteSeleccionado(cliente); // Establece el cliente a editar
     console.log(cliente);
     setMostrarModal(true); // Muestra el modal
+  };
+  const EliminarCliente = async (cliente) => {
+    /* setClienteEliminar(cliente); */
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/clients/${cliente.rut_cliente}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Agregar token en el header
+          },
+        }
+      );
+      if (response.status === 200) {
+        setClientes(clientes.filter((c) => c.rut_cliente!== cliente.rut_cliente));
+        setClienteEliminar(null);
+        
+      }
+    
+      Swal.fire({
+        title: '¡Éxito!',
+        text: `${response.data.message}`,
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+      });
+    } catch (error) {}
   };
 
   const cerrarModal = () => {
@@ -82,11 +246,52 @@ const ClientesFiltrados = () => {
     });
   };
   const guardarCliente = async () => {
+    const errorealEditar = {};
+    if (
+      clienteSeleccionado.email_cliente &&
+      !validarEmail(clienteSeleccionado.email_cliente)
+    ) {
+      errorealEditar.email_cliente = "Email inválido. Debe ser formato email";
+    }
+    if (
+      clienteSeleccionado.telefono_cliente &&
+      !validarTelefono(clienteSeleccionado.telefono_cliente)
+    ) {
+      errorealEditar.telefono_cliente =
+        "Teléfono inválido. Debe tener 9 dígitos";
+    }
+    if (
+      clienteSeleccionado.rut_cliente &&
+      !validarRut(clienteSeleccionado.rut_cliente)
+    ) {
+      errorealEditar.rut_cliente = "RUT inválido. Debe ser formato rut";
+    }
+    if (
+      clienteSeleccionado.nombre_cliente &&
+      !validarNombre(clienteSeleccionado.nombre_cliente)
+    ) {
+      errorealEditar.nombre_cliente = "Nombre inválido. Solo tipo texto";
+    }
+    if (
+      clienteSeleccionado.id_sucursal &&
+      !validarSucursal(clienteSeleccionado.id_sucursal)
+    ) {
+      errorealEditar.id_sucursal = "Sucursal inválido. Solo tipo número";
+    }
+    if (Object.keys(errorealEditar).length > 0) {
+      seterrorEditar(errorealEditar);
+      return;
+    }
     try {
       // Realiza la petición PUT al backend con los datos del cliente seleccionado
       const response = await axios.put(
         `http://localhost:3000/api/clients/${clienteSeleccionado.rut_cliente}`,
-        clienteSeleccionado
+        clienteSeleccionado,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Agregar token en el header
+          },
+        }
       );
 
       // Si la respuesta es exitosa, actualiza la lista de clientes
@@ -96,18 +301,34 @@ const ClientesFiltrados = () => {
             ? clienteSeleccionado
             : cliente
         );
+        seterrorEditar({});
         setClientes(nuevosClientes);
         cerrarModal(); // Cierra el modal después de guardar los cambios
-        alert("Registro actualizado correctamente.");
+        Swal.fire({
+          title: "¡Éxito!",
+          text: `${response.data.message}`,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
       }
     } catch (error) {
-      console.error("Error al guardar los cambios:", error);
+      console.log("Error al guardar los cambios:", error.response.data.message);
+      Swal.fire({
+        title: "¡Error!",
+        text: `${error.response.data.message}`,
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
       setError("Hubo un problema al guardar los cambios.");
     }
+    try {
+      /*  const response = await axios.delete() */
+    } catch (error) {}
   };
 
   return (
     <>
+      <Navbar />
       <div className="clientes-filtrados-container">
         <div className="rowContainer">
           <div>
@@ -123,6 +344,11 @@ const ClientesFiltrados = () => {
                   onChange={handleChange}
                   placeholder="Sucursal"
                 />
+                {errores.id_sucursal && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    {errores.id_sucursal}
+                  </span>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="nombre_cliente">Nombre</label>
@@ -134,6 +360,11 @@ const ClientesFiltrados = () => {
                   onChange={handleChange}
                   placeholder="Nombre del cliente"
                 />
+                {errores.nombre_cliente && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    {errores.nombre_cliente}
+                  </span>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="rut_cliente">RUT</label>
@@ -145,20 +376,30 @@ const ClientesFiltrados = () => {
                   onChange={handleChange}
                   placeholder="RUT del cliente"
                 />
+                {errores.rut_cliente && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    {errores.rut_cliente}
+                  </span>
+                )}
               </div>
               <div className="form-group">
-                <label htmlFor="telefono_cliente">Telefono Cliente</label>
+                <label htmlFor="telefono_cliente">Teléfono Cliente</label>
                 <input
                   type="text"
                   id="telefono_cliente"
                   name="telefono_cliente"
                   value={filters.telefono_cliente}
                   onChange={handleChange}
-                  placeholder="Telenofo del clienete"
+                  placeholder="Teléfono del cliente"
                 />
+                {errores.telefono_cliente && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    {errores.telefono_cliente}
+                  </span>
+                )}
               </div>
               <div className="form-group">
-                <label htmlFor="fecha_hasta">Email</label>
+                <label htmlFor="email_cliente">Email</label>
                 <input
                   type="text"
                   id="email_cliente"
@@ -166,6 +407,11 @@ const ClientesFiltrados = () => {
                   value={filters.email_cliente}
                   onChange={handleChange}
                 />
+                {errores.email_cliente && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    {errores.email_cliente}
+                  </span>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="fecha_desde">Fecha Desde</label>
@@ -176,6 +422,12 @@ const ClientesFiltrados = () => {
                   value={filters.fecha_desde}
                   onChange={handleChange}
                 />
+
+                {errores.rango_fechas && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    {errores.rango_fechas}
+                  </span>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="fecha_hasta">Fecha Hasta</label>
@@ -186,6 +438,12 @@ const ClientesFiltrados = () => {
                   value={filters.fecha_hasta}
                   onChange={handleChange}
                 />
+
+                {errores.rango_fechas && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    {errores.rango_fechas}
+                  </span>
+                )}
               </div>
 
               <button type="submit" className="btn-submit">
@@ -206,9 +464,14 @@ const ClientesFiltrados = () => {
       </div>
       <div className="clientes-grid">
         {clientes.length > 0 ? (
-          <button className="rojo botton" onClick={() => limpiarGrilla()}>
-            Limpiar grilla
-          </button>
+          <div className="contenedor_botones">
+            <button className="rojo botton" onClick={() => limpiarGrilla()}>
+              Limpiar grilla
+            </button>
+            <button className="Naranja botton" onClick={exportarExcel}>
+              Generar Planilla
+            </button>
+          </div>
         ) : (
           ""
         )}
@@ -222,7 +485,7 @@ const ClientesFiltrados = () => {
                 <th>Teléfono</th>
                 <th>RUT</th>
                 <th>Fecha Registro</th>
-                <th>Opcion</th>
+                <th>Opciones</th>
               </tr>
             </thead>
             <tbody>
@@ -242,8 +505,18 @@ const ClientesFiltrados = () => {
                   </td>
 
                   <td>
-                    <button className="amarillo" onClick={() => abrirModalEdicion(cliente)}>
+                    <button
+                      className="amarillo"
+                      onClick={() => abrirModalEdicion(cliente)}
+                    >
                       Editar
+                    </button>
+                    <button
+                      style={{ marginLeft: "5px" }}
+                      className="rojo"
+                      onClick={() => EliminarCliente(cliente)}
+                    >
+                      Eliminar
                     </button>
                   </td>
                 </tr>
@@ -272,6 +545,14 @@ const ClientesFiltrados = () => {
                   value={clienteSeleccionado.nombre_cliente}
                   onChange={manejarEdicion}
                 />
+                {errorEditar.nombre_cliente && (
+                  <span
+                    style={{ color: "red", fontSize: "12px" }}
+                    className="error"
+                  >
+                    {errorEditar.nombre_cliente}
+                  </span>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="email_cliente">Email</label>
@@ -282,6 +563,14 @@ const ClientesFiltrados = () => {
                   value={clienteSeleccionado.email_cliente}
                   onChange={manejarEdicion}
                 />
+                {errorEditar.email_cliente && (
+                  <span
+                    style={{ color: "red", fontSize: "12px" }}
+                    className="error"
+                  >
+                    {errorEditar.email_cliente}
+                  </span>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="telefono_cliente">Teléfono</label>
@@ -292,6 +581,14 @@ const ClientesFiltrados = () => {
                   value={clienteSeleccionado.telefono_cliente}
                   onChange={manejarEdicion}
                 />
+                {errorEditar.telefono_cliente && (
+                  <span
+                    style={{ color: "red", fontSize: "12px" }}
+                    className="error"
+                  >
+                    {errorEditar.telefono_cliente}
+                  </span>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="rut_cliente">RUT</label>
@@ -302,6 +599,14 @@ const ClientesFiltrados = () => {
                   value={clienteSeleccionado.rut_cliente}
                   onChange={manejarEdicion}
                 />
+                {errorEditar.rut_cliente && (
+                  <span
+                    style={{ color: "red", fontSize: "12px" }}
+                    className="error"
+                  >
+                    {errorEditar.rut_cliente}
+                  </span>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="id_sucursal">Sucursal</label>
@@ -312,6 +617,14 @@ const ClientesFiltrados = () => {
                   value={clienteSeleccionado.id_sucursal}
                   onChange={manejarEdicion}
                 />
+                {errorEditar.id_sucursal && (
+                  <span
+                    style={{ color: "red", fontSize: "12px" }}
+                    className="error"
+                  >
+                    {errorEditar.id_sucursal}
+                  </span>
+                )}
               </div>
 
               <button

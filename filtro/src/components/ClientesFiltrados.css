@@ -93,6 +93,7 @@
   }
   .amarillo{
     background-color: #e6ff06;
+    color: black;
   }
   
   /* Modal.............................. */
@@ -142,11 +143,19 @@
   cursor: pointer;
   font-size: 16px;
 }
+.Naranja{
+  background-color: orangered;
+}
+.contenedor_botones{
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
 
 /* Estilo para el botón de guardar en hover */
-.btn-guardar:hover {
+/* .btn-guardar:hover {
   background-color: #218838; /* Color verde más oscuro */
-}
+
 
 /* Estilo para los inputs del formulario */
 .modal-content input {
