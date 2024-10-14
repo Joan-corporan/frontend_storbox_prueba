@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import IniciarSesion from './components/IniciarSesion';
 import Login from './components/Login';
 import Register from './components/Register';
+import { ListaDeUser } from './components/ListaDeUser';
 
 function Index() {
   return (
@@ -14,6 +15,7 @@ function Index() {
       <Router>
         <Routes>
           {<Route exact path="/" element={<Home />} />}
+          {<Route exact path="/lista-users" element={<ListaDeUser />} />}
           <Route exact path="/iniciarsesion" element={<IniciarSesion />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />

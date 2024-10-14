@@ -14,7 +14,7 @@ const FormularioCliente = () => {
 
   const [errores, setErrores] = useState({});
   const[errorMensaje,setErrorMensaje]= useState("")
-  const [okMensaje,setOkmensaje]=useState()
+  
 /* const {mostrarAlerta}= SweetAlert() */
   // Funciones de validación
   const validarNombre = (nombre) => {
@@ -188,7 +188,7 @@ const validarSucursal=(sucursal)=>{
         {errores.rut_cliente && <span style={{ color: 'red', fontSize:"12px"}}>{errores.rut_cliente}</span>}
       </div>
 
-      <button type="submit" className="btn-crear azul">Crear Cliente</button>
+      <button  type="submit" className="btn-crear azul">Crear Cliente</button>
     </form>  
     
     </>

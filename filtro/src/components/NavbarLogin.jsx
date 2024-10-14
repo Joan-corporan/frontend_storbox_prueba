@@ -3,7 +3,7 @@ import React from "react";
 import "./login.css"; 
 import { useNavigate } from "react-router";
 
-const Navbar = () => {
+const NavbarLogin = () => {
   const navegate = useNavigate();
   const handleLogout = () => {
     // Elimina el token del almacenamiento local
@@ -37,16 +37,15 @@ const Navbar = () => {
         boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
         transition: "background-color 0.3s ease",
   
-    }} className="navbar">
+    }} className="Login">
       <div style={{marginLeft:"20px"}} className="navbar-title">Gestor de Clientes</div>
-      <div className="navbar-options">
+      {/* <div className="navbar-options">
         <button
         onClick={() => {
             btnInicio();
           }}
-          
-          style={{ marginRight: "10px" }}
-          className="register-button"
+          style={{ backgroundColor: "red", marginRight: "10px" }}
+          className="login-button"
         >
           Inicio
         </button>
@@ -59,9 +58,9 @@ const Navbar = () => {
         >
           Registrar Personal
         </button>
-        <button className="register-button" onClick={()=>{ btnListaUsers()}}
+        <button onClick={()=>{ btnListaUsers()}}
           style={{
-            /* backgroundColor: "#218838", */
+            backgroundColor: "yellowgreen",
             marginRight: "10px",
             marginLeft: "10px",
           }}
@@ -75,9 +74,9 @@ const Navbar = () => {
         >
           Cerrar Sesion
         </button>
-      </div>
+      </div> */}
     </nav>
   );
 };
 
-export default Navbar;
+export default NavbarLogin;

@@ -37,7 +37,7 @@ const IniciarSesion = () => {
             type="rut"
             value={rut}
             onChange={(e) => setRut(e.target.value)}
-            required
+            /* required */
           />
         </div>
         <div>
@@ -46,7 +46,7 @@ const IniciarSesion = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            /* required */
           />
         </div>
         <button type="submit">Iniciar sesión</button>

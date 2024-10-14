@@ -77,6 +77,7 @@ const ClientesFiltrados = () => {
       fecha_hasta: "",
       rut_cliente: "",
     });
+    setErrores("")
   };
   const limpiarGrilla = () => {
     setClientes([]);
@@ -404,6 +405,7 @@ const ClientesFiltrados = () => {
                   type="text"
                   id="email_cliente"
                   name="email_cliente"
+                  placeholder="ejemplo.123@gmail.com"
                   value={filters.email_cliente}
                   onChange={handleChange}
                 />
@@ -446,8 +448,8 @@ const ClientesFiltrados = () => {
                 )}
               </div>
 
-              <button type="submit" className="btn-submit">
-                Buscar
+              <button style={{backgroundColor:"#333"}} type="submit" className="btn-submit">
+                Buscar Cliente
               </button>
             </form>
             <button className="rojo " onClick={() => limpiarfiltros()}>
@@ -463,70 +465,76 @@ const ClientesFiltrados = () => {
         {error && <p className="error">{error}</p>}
       </div>
       <div className="clientes-grid">
-        {clientes.length > 0 ? (
-          <div className="contenedor_botones">
-            <button className="rojo botton" onClick={() => limpiarGrilla()}>
-              Limpiar grilla
-            </button>
-            <button className="Naranja botton" onClick={exportarExcel}>
-              Generar Planilla
-            </button>
-          </div>
-        ) : (
-          ""
-        )}
-        {clientes.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>Sucursal</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Teléfono</th>
-                <th>RUT</th>
-                <th>Fecha Registro</th>
-                <th>Opciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {clientes.map((cliente) => (
-                <tr key={cliente.rut_cliente}>
-                  <td>{cliente.id_sucursal}</td>
-                  <td>{cliente.nombre_cliente}</td>
-                  <td>{cliente.email_cliente}</td>
-                  <td>{cliente.telefono_cliente}</td>
-                  <td>{cliente.rut_cliente}</td>
-                  <td>
-                    {
-                      new Date(cliente.fecha_registro)
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                  </td>
+  {clientes.length > 0 ? (
+    <div className="contenedor_botones">
+      <button className="rojo botton" onClick={() => limpiarGrilla()}>
+        Limpiar grilla
+      </button>
+      <button className="Naranja botton" onClick={exportarExcel}>
+        Generar Planilla
+      </button>
+    </div>
+  ) : (
+    ""
+  )}
+  {clientes.length > 0 ? (
+    <div style={{ height: "500px", overflowY: "auto", marginBottom: "30px", width:"100%",  display:"flex", justifyContent:"center"/* flexDirection:"column", justifyContent:"center",alignItems:"center" */ }}>
+      <table id="table-height" style={{ width: "90%" }}>
+        <thead>
+          <tr>
+            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1  }}>Sucursal</th>
+            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>Nombre</th>
+            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>Email</th>
+            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>Teléfono</th>
+            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>RUT</th>
+            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>Fecha Registro</th>
+            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {clientes.map((cliente) => (
+            <tr  key={cliente.rut_cliente}>
+              <td>{cliente.id_sucursal}</td>
+              <td>{cliente.nombre_cliente}</td>
+              <td>{cliente.email_cliente}</td>
+              <td>{cliente.telefono_cliente}</td>
+              <td>{cliente.rut_cliente}</td>
+              <td>
+                {new Date(cliente.fecha_registro).toISOString().split("T")[0]}
+              </td>
+              <td style={{display:"flex",justifyContent:"center", alignItems:"center", height:"100%"}}>
+                <button
+                  className="boton-eliminar"
+                  onClick={() => abrirModalEdicion(cliente)}
+                >
+                  <img
+                    style={{ width: "15px" }}
+                    src="public/pencil.svg"
+                    alt="icon"
+                  />
+                </button>
+                <button
+                  style={{ marginLeft: "5px" }}
+                  className="boton-eliminar"
+                  onClick={() => EliminarCliente(cliente)}
+                >
+                  <img
+                    style={{ width: "15px" }}
+                    src="public/delete.svg"
+                    alt="icon"
+                  />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <p>No se encontraron resultados</p>
+  )}
+</div>
 
-                  <td>
-                    <button
-                      className="amarillo"
-                      onClick={() => abrirModalEdicion(cliente)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      style={{ marginLeft: "5px" }}
-                      className="rojo"
-                      onClick={() => EliminarCliente(cliente)}
-                    >
-                      Eliminar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No se encontraron resultados</p>
-        )}
-      </div>
       {/* Modal para editar cliente */}
       {mostrarModal && (
         <div className="modal">
@@ -534,7 +542,7 @@ const ClientesFiltrados = () => {
             <span className="close" onClick={cerrarModal}>
               &times;
             </span>
-            <h2>Editar Cliente</h2>
+            <h4 style={{margin:"5px", textAlign:"center"}}>Actualizar Cliente</h4>
             <form>
               <div className="form-group">
                 <label htmlFor="nombre_cliente">Nombre</label>

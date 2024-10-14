@@ -4,7 +4,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
-    padding: 20px;
+    
 }
 
 h1, h2 {
@@ -37,6 +37,12 @@ input {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+th, td{
+    padding: 5px;
+}
+/* tr{
+    height: 40px;
+} */
 
 button {
     padding: 10px;
@@ -46,12 +52,28 @@ button {
     border-radius: 4px;
     cursor: pointer;
 }
+/* .table-height{
+    overflow: hidden;
+    height: 200px;
+    overflow-y: auto;
+} */
 
 button:hover {
-    background-color: #218838;
+    box-shadow: 1px 2px 3px #666666;
+    transition: 200ms;
+    
 }
 /* styles.css */
+.boton-eliminar{
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #d1cccc;
+}
+.boton-eliminar:hover{
+ background-color:#a3a3a3 ;
 
+}
 .error-container {
     max-width: 400px;
     margin: 20px auto;
@@ -69,7 +91,7 @@ button:hover {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #007bff; /* Color de fondo del navbar */
+    /* background-color: #007bff; */ /* Color de fondo del navbar */
     color: white; /* Color del texto */
 }
 

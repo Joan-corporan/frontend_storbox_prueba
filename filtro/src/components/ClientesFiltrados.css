@@ -159,7 +159,7 @@
 
 /* Estilo para los inputs del formulario */
 .modal-content input {
-  width: 100%; /* Para que los inputs ocupen todo el ancho del modal */
+  /* width: 100%; */ /* Para que los inputs ocupen todo el ancho del modal */
   padding: 10px;
   margin-bottom: 10px; /* Espacio entre inputs */
   border: 1px solid #ccc;
