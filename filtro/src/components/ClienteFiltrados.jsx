@@ -13,7 +13,9 @@ const ClientesFiltrados = () => {
   const [clientes, setClientes] = useState([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null); // Almacena el cliente seleccionado para editar
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [clienteEliminado, setClienteEliminar] = useState(null);
+  const [modalRegitroCliente, setMostrarModalRegistro] = useState(false);
+
+  const [setClienteEliminar] = useState(null);
   const [filters, setFilters] = useState({
     id_sucursal: "",
     nombre_cliente: "",
@@ -23,12 +25,7 @@ const ClientesFiltrados = () => {
     fecha_hasta: "",
     rut_cliente: "",
   });
-  const token = localStorage.getItem("token");
-  /* console.log(token) */
-  if (!token) {
-    alert("No se encontró el token de autenticación. Inicia sesión.");
-    return;
-  }
+ 
   // Validaciones
   const [errores, setErrores] = useState({});
 
@@ -77,7 +74,7 @@ const ClientesFiltrados = () => {
       fecha_hasta: "",
       rut_cliente: "",
     });
-    setErrores("")
+    setErrores("");
   };
   const limpiarGrilla = () => {
     setClientes([]);
@@ -89,16 +86,25 @@ const ClientesFiltrados = () => {
       [name]: value,
     });
   };
-
+  const token = localStorage.getItem("token");
+  /* console.log(token) */
+  if (!token) {
+    alert("No se encontró el token de autenticación. Inicia sesión.");
+    return;
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     const nuevosErrores = {};
-
+    if (filters.id_sucursal > 3) {
+      nuevosErrores.id_sucursal =
+        "Error en la sucursal. Solo valores entre 1 y 3";
+    }
     // Validaciones
     if (filters.id_sucursal && !validarSucursal(filters.id_sucursal)) {
-      nuevosErrores.id_sucursal = "Sucursal inválido. Solo tipo número";
+      nuevosErrores.id_sucursal =
+        "Sucursal inválido. Solo tipo números positivos";
     }
     if (filters.nombre_cliente && !validarNombre(filters.nombre_cliente)) {
       nuevosErrores.nombre_cliente = "Nombre inválido. Solo tipo texto";
@@ -144,16 +150,24 @@ const ClientesFiltrados = () => {
     const fechaHastaFormateada = filters.fecha_hasta
       ? new Date(filters.fecha_hasta).toISOString().split("T")[0]
       : "";
-      
-      try {
-  if(filters.email_cliente ===""&& filters.rut_cliente===""&&filters.id_sucursal===""&&filters.nombre_cliente===""&&filters.fecha_desde===""&&filters.fecha_hasta===""&&filters.telefono_cliente===""){
-    return Swal.fire({
-      title: '¡Error!',
-      text: "Debes colocar valores para poder filtrar",
-      icon: 'error',
-      confirmButtonText: 'Aceptar',
-    });
-  }
+
+    try {
+      if (
+        filters.email_cliente === "" &&
+        filters.rut_cliente === "" &&
+        filters.id_sucursal === "" &&
+        filters.nombre_cliente === "" &&
+        filters.fecha_desde === "" &&
+        filters.fecha_hasta === "" &&
+        filters.telefono_cliente === ""
+      ) {
+        return Swal.fire({
+          title: "¡Error!",
+          text: "Debes colocar valores para poder filtrar",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
       const { data } = await axios.get(
         "http://localhost:3000/api/clients/filtro",
         {
@@ -168,6 +182,7 @@ const ClientesFiltrados = () => {
         }
       );
       setClientes(data.detail);
+      setErrores("");
     } catch (err) {
       setError("Error al obtener los datos de clientes.");
     } finally {
@@ -220,18 +235,25 @@ const ClientesFiltrados = () => {
         }
       );
       if (response.status === 200) {
-        setClientes(clientes.filter((c) => c.rut_cliente!== cliente.rut_cliente));
+        setClientes(
+          clientes.filter((c) => c.rut_cliente !== cliente.rut_cliente)
+        );
         setClienteEliminar(null);
-        
       }
-    
+
       Swal.fire({
-        title: '¡Éxito!',
+        title: "¡Éxito!",
         text: `${response.data.message}`,
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
+        icon: "success",
+        confirmButtonText: "Aceptar",
       });
     } catch (error) {}
+  };
+  const abrirModalRegistroCliente = () => {
+    setMostrarModalRegistro(true);
+  };
+  const cerralModalRegistroCliente = () => {
+    setMostrarModalRegistro(false);
   };
 
   const cerrarModal = () => {
@@ -330,21 +352,25 @@ const ClientesFiltrados = () => {
   return (
     <>
       <Navbar />
-      <div className="clientes-filtrados-container">
+      <div style={{ padding: "0" }} className="clientes-filtrados-container">
         <div className="rowContainer">
           <div>
             <h1>Filtrar Clientes</h1>
             <form className="filter-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="id_sucursal">Sucursal</label>
-                <input
-                  type="text"
+                <select
                   id="id_sucursal"
                   name="id_sucursal"
                   value={filters.id_sucursal}
                   onChange={handleChange}
-                  placeholder="Sucursal"
-                />
+                  placeholder="Selecciona una sucursal"
+                >
+                  <option disabled value="">Selecciona una sucursal</option>
+                  <option value="1">Sucursal 1</option>
+                  <option value="2">Sucursal 2</option>
+                  <option value="3">Sucursal 3</option>
+                </select>
                 {errores.id_sucursal && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.id_sucursal}
@@ -447,8 +473,18 @@ const ClientesFiltrados = () => {
                   </span>
                 )}
               </div>
-
-              <button style={{backgroundColor:"#333"}} type="submit" className="btn-submit">
+              <button
+                style={{ backgroundColor: "#333" }}
+                type="button"
+                onClick={abrirModalRegistroCliente}
+              >
+                Registrar Cliente
+              </button>
+              <button
+                style={{ backgroundColor: "#333" }}
+                type="submit"
+                className="btn-submit"
+              >
                 Buscar Cliente
               </button>
             </form>
@@ -457,7 +493,11 @@ const ClientesFiltrados = () => {
             </button>
           </div>
           <div>
-            <FormularioCliente />
+            {modalRegitroCliente && (
+              <FormularioCliente
+                cerralModalRegistroCliente={cerralModalRegistroCliente}
+              />
+            )}
           </div>
         </div>
 
@@ -465,75 +505,159 @@ const ClientesFiltrados = () => {
         {error && <p className="error">{error}</p>}
       </div>
       <div className="clientes-grid">
-  {clientes.length > 0 ? (
-    <div className="contenedor_botones">
-      <button className="rojo botton" onClick={() => limpiarGrilla()}>
-        Limpiar grilla
-      </button>
-      <button className="Naranja botton" onClick={exportarExcel}>
-        Generar Planilla
-      </button>
-    </div>
-  ) : (
-    ""
-  )}
-  {clientes.length > 0 ? (
-    <div style={{ height: "500px", overflowY: "auto", marginBottom: "30px", width:"100%",  display:"flex", justifyContent:"center"/* flexDirection:"column", justifyContent:"center",alignItems:"center" */ }}>
-      <table id="table-height" style={{ width: "90%" }}>
-        <thead>
-          <tr>
-            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1  }}>Sucursal</th>
-            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>Nombre</th>
-            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>Email</th>
-            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>Teléfono</th>
-            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>RUT</th>
-            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>Fecha Registro</th>
-            <th style={{ backgroundColor: "#333",position: "sticky", top: 0, zIndex: 1 }}>Opciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clientes.map((cliente) => (
-            <tr  key={cliente.rut_cliente}>
-              <td>{cliente.id_sucursal}</td>
-              <td>{cliente.nombre_cliente}</td>
-              <td>{cliente.email_cliente}</td>
-              <td>{cliente.telefono_cliente}</td>
-              <td>{cliente.rut_cliente}</td>
-              <td>
-                {new Date(cliente.fecha_registro).toISOString().split("T")[0]}
-              </td>
-              <td style={{display:"flex",justifyContent:"center", alignItems:"center", height:"100%"}}>
-                <button
-                  className="boton-eliminar"
-                  onClick={() => abrirModalEdicion(cliente)}
-                >
-                  <img
-                    style={{ width: "15px" }}
-                    src="public/pencil.svg"
-                    alt="icon"
-                  />
-                </button>
-                <button
-                  style={{ marginLeft: "5px" }}
-                  className="boton-eliminar"
-                  onClick={() => EliminarCliente(cliente)}
-                >
-                  <img
-                    style={{ width: "15px" }}
-                    src="public/delete.svg"
-                    alt="icon"
-                  />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  ) : (
-    <p>No se encontraron resultados</p>
-  )}
-</div>
+        {clientes.length > 0 ? (
+          <div className="contenedor_botones">
+            <button className="rojo botton" onClick={() => limpiarGrilla()}>
+              Limpiar grilla
+            </button>
+            <button className="Naranja botton" onClick={exportarExcel}>
+              Generar Planilla
+            </button>
+          </div>
+        ) : (
+          ""
+        )}
+        {clientes.length > 0 ? (
+          <div
+            style={{
+              height: "500px",
+              overflowY: "auto",
+              marginBottom: "30px",
+            }}
+          >
+            <table /* id="table-height" */ style={{ width: "90%" }}>
+              <thead>
+                <tr>
+                  <th
+                    style={{
+                      backgroundColor: "#333",
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 1,
+                    }}
+                  >
+                    Sucursal
+                  </th>
+                  <th
+                    style={{
+                      backgroundColor: "#333",
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 1,
+                    }}
+                  >
+                    Nombre
+                  </th>
+                  <th
+                    style={{
+                      backgroundColor: "#333",
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 1,
+                    }}
+                  >
+                    Email
+                  </th>
+                  <th
+                    style={{
+                      backgroundColor: "#333",
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 1,
+                    }}
+                  >
+                    Teléfono
+                  </th>
+                  <th
+                    style={{
+                      backgroundColor: "#333",
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 1,
+                    }}
+                  >
+                    RUT
+                  </th>
+                  <th
+                    style={{
+                      backgroundColor: "#333",
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 1,
+                    }}
+                  >
+                    Fecha Registro
+                  </th>
+                  <th
+                    style={{
+                      backgroundColor: "#333",
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 1,
+                    }}
+                  >
+                    Opciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {clientes.map((cliente) => (
+                  <tr key={cliente.rut_cliente}>
+                    <td>{cliente.id_sucursal}</td>
+                    <td>{cliente.nombre_cliente}</td>
+                    <td>{cliente.email_cliente}</td>
+                    <td>{cliente.telefono_cliente}</td>
+                    <td>{cliente.rut_cliente}</td>
+                    <td>
+                      
+                        { new Date(cliente.fecha_registro)
+                          .toISOString()
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("-")
+                      }
+                      
+                    </td>
+                    <td
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        /* height: "100%", */
+                      }}
+                    >
+                      <button
+                        className="boton-eliminar"
+                        onClick={() => abrirModalEdicion(cliente)}
+                      >
+                        <img
+                          style={{ width: "15px" }}
+                          src="public/pencil.svg"
+                          alt="icon"
+                        />
+                      </button>
+                      <button
+                        style={{ marginLeft: "5px" }}
+                        className="boton-eliminar"
+                        onClick={() => EliminarCliente(cliente)}
+                      >
+                        <img
+                          style={{ width: "15px" }}
+                          src="public/delete.svg"
+                          alt="icon"
+                        />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p></p>
+        )}
+      </div>
 
       {/* Modal para editar cliente */}
       {mostrarModal && (
@@ -542,7 +666,9 @@ const ClientesFiltrados = () => {
             <span className="close" onClick={cerrarModal}>
               &times;
             </span>
-            <h4 style={{margin:"5px", textAlign:"center"}}>Actualizar Cliente</h4>
+            <h4 style={{ margin: "5px", textAlign: "center" }}>
+              Actualizar Cliente
+            </h4>
             <form>
               <div className="form-group">
                 <label htmlFor="nombre_cliente">Nombre</label>

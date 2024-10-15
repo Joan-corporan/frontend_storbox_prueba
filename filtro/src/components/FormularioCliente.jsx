@@ -3,7 +3,7 @@ import axios from 'axios';
 import "./login.css"
 import Swal from 'sweetalert2'; 
 
-const FormularioCliente = () => {
+const FormularioCliente = ({ cerralModalRegistroCliente }) => {
   const [cliente, setCliente] = useState({
     id_sucursal: '',
     nombre_cliente: '',
@@ -11,47 +11,54 @@ const FormularioCliente = () => {
     telefono_cliente: '',
     rut_cliente: '',
   });
-
   const [errores, setErrores] = useState({});
   const[errorMensaje,setErrorMensaje]= useState("")
-  
-/* const {mostrarAlerta}= SweetAlert() */
+  /* const[modalCerrado,setCerrarModal]=useState(false) */
+ 
+  /* const {mostrarAlerta}= SweetAlert() */
   // Funciones de validación
   const validarNombre = (nombre) => {
     const regex = /^[a-zA-ZñáéíóúÁÉÍÓ��\s]+$/;
     return regex.test(nombre);
   };
-const validarSucursal=(sucursal)=>{
-  const regex=/^[0-9]+$/;
-  return regex.test(sucursal)
-}
+  const validarSucursal=(sucursal)=>{
+    const regex=/^[0-9]+$/;
+    return regex.test(sucursal)
+  }
   const validarEmail = (email) => {
     const regex = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
   };
-
+  
   const validarTelefono = (telefono) => {
     const regex = /^(\+56)?9[0-9]{8}$/; 
     return regex.test(telefono);
   };
-
-  const validarRut = (rut) => {
-    const regex = /^[0-9]{7,8}-[0-9Kk]{1}$/;
-    return regex.test(rut.trim().toUpperCase());
-  };
   
-
+  const validarRut = (rut) => {
+    const regex = /^[0-9]{7,8}-[0-9]{1}$/
+;
+    return regex.test(rut.trim());
+  };
+ /*  const cerrarModalRegistro=()=>{
+    setCerrarModal(cerrarModal)
+    console.log(modalCerrado)
+    console.log(cerrarModal);
+    
+  } */
+  
   const handleChange = (e) => {
     setCliente({
       ...cliente,
       [e.target.name]: e.target.value,
     });
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     
+    
+    /* console.log(cerrarModal) */
     const nuevoErrores = {};
     if (!validarSucursal(cliente.id_sucursal)) {
       nuevoErrores.id_sucursal = 'Sucursal inválido. Solo tipo número';
@@ -119,19 +126,30 @@ const validarSucursal=(sucursal)=>{
 
   return (
     <>
+     <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={cerralModalRegistroCliente}>
+              &times;
+            </span>
+            <h4 style={{margin:"5px", textAlign:"center"}}>Crear nuevo cliente</h4>
+           
     <form onSubmit={handleSubmit} className="form-cliente">
-      <h2>Crear nuevo cliente</h2>
+ 
 
       <div className="form-group">
         <label>Sucursal</label>
-        <input
-          type="text"
-          name="id_sucursal"
-          value={cliente.id_sucursal}
-          onChange={handleChange}
-          placeholder='Ejemplo: 1234'
-          
-        />
+        <select
+                  id="id_sucursal"
+                  name="id_sucursal"
+                  value={cliente.id_sucursal}
+                  onChange={handleChange}
+                  placeholder="Selecciona una sucursal"
+                >
+                  <option disabled value="">Selecciona una sucursal</option>
+                  <option value="1">Sucursal 1</option>
+                  <option value="2">Sucursal 2</option>
+                  <option value="3">Sucursal 3</option>
+                </select>
         {errores.id_sucursal && <span style={{ color: 'red', fontSize:"12px" }}>{errores.id_sucursal}</span>}
 
       </div>
@@ -190,6 +208,8 @@ const validarSucursal=(sucursal)=>{
 
       <button  type="submit" className="btn-crear azul">Crear Cliente</button>
     </form>  
+          </div>
+        </div>
     
     </>
   );

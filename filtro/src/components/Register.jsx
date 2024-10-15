@@ -27,9 +27,9 @@ const Register = () => {
     const regex = /^[0-9]{7,8}-[0-9Kk]{1}$/;
     return regex.test(rut);
   };
-  const validarContraseña = (rut) => {
+  const validarContraseña = (password) => {
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
-    return regex.test(rut);
+    return regex.test(password);
   };
   const validarNombre = (nombre) => {
     const regex =  /^[a-zA-ZñáéíóúÁÉÍÓ��\s]+$/;
