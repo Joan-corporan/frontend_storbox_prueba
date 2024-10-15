@@ -58,8 +58,7 @@ if(Object.keys(nuevoError).length>0){
     );
     const { token, message } = response.data;
     localStorage.setItem("token", token);
-/*     localStorage.setItem("userName", user.nombre);
-    localStorage.getItem("userName", user.nombre); */
+
 
     setloginUser({
       rut: "",
@@ -95,6 +94,7 @@ if(Object.keys(nuevoError).length>0){
             type="text"
             name="rut"
             value={loginUser.rut}
+            placeholder="12345678-2"
             /* required */
           />
    {errorMensaje.rut && (
@@ -111,6 +111,7 @@ if(Object.keys(nuevoError).length>0){
             type="password"
             name="password"
             value={loginUser.password}
+            placeholder="Ejemplo123"
             /* required */
           />
 

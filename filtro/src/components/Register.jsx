@@ -132,6 +132,7 @@ const Register = () => {
             type="text"
             name="rut"
             value={userR.rut}
+             placeholder="12345678-2"
             /* required */
           />
           {errores.rut && (
@@ -146,6 +147,7 @@ const Register = () => {
             type="text"
             name="name"
             value={userR.name}
+             placeholder="Pedro"
             /* required */
           />
           {errores.name && (
@@ -160,6 +162,7 @@ const Register = () => {
             type="password"
             name="password"
             value={userR.password}
+            placeholder="Ejemplo123"
             /* required */
           />
           {errores.password && (
@@ -175,6 +178,7 @@ const Register = () => {
             type="password"
             name="confirmPassword"
             value={userR.confirmPassword}
+             placeholder="Ejemplo123"
             /* required */
           />
           {/* {errores.password&& <span style={{ color: "red", fontSize: "12px" }}>
