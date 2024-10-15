@@ -8,10 +8,13 @@ import "./login.css";
 export const ListaDeUser = () => {
   const [listtaUser, setListaUser] = useState([]);
   const token = localStorage.getItem("token");
+  const rutUserLogger = localStorage.getItem("userRut");
+ console.log(rutUserLogger)
+
 
   const getListaU = async () => {
     const response = await axios.get(
-      "http://localhost:3000/api/clients/getUserList",
+      `http://localhost:3000/api/clients/getUserList?rut=${rutUserLogger}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

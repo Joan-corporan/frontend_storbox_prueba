@@ -56,8 +56,12 @@ if(Object.keys(nuevoError).length>0){
       "http://localhost:3000/api/clients/api/login",
       loginUser
     );
-    const { token, message } = response.data;
+    const { token, message, user } = response.data;
     localStorage.setItem("token", token);
+    localStorage.setItem("userName", user.nombre);
+    localStorage.setItem("userRut", user.rut);
+
+
 
 
     setloginUser({

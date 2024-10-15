@@ -6,11 +6,13 @@ import { useNavigate } from "react-router";
 const Navbar = () => {
   const navegate = useNavigate();
   
-  /* const nombreUserLogiado=  localStorage.setItem("userName", user.nombre); */
+  const nombreUserLogiado=  localStorage.getItem("userName");
+  
+  console.log(nombreUserLogiado)
   const handleLogout = () => {
     // Elimina el token del almacenamiento local
     localStorage.removeItem("token");
-    /* localStorage.removeItem("userName", user.nombre); */
+    localStorage.removeItem("userName");
 
 
     // Redirige al usuario a la página de inicio de sesión
@@ -43,7 +45,7 @@ const Navbar = () => {
       <div style={{ marginLeft: "20px" }} className="navbar-title">
         Gestor de Clientes
       </div>
-      {/* <p>{nombreUserLogiado}</p> */}
+      <h4>User:<span>{nombreUserLogiado}</span></h4>
       <div className="navbar-options">
         <button
           onClick={() => {
