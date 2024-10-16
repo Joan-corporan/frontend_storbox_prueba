@@ -27,7 +27,7 @@ const ClientesFiltrados = () => {
     fecha_hasta: "",
     rut_cliente: "",
   });
- 
+
   // Validaciones
   const [errores, setErrores] = useState({});
 
@@ -162,7 +162,10 @@ const ClientesFiltrados = () => {
       setLoading(false);
       return;
     }
-    if (filters.telefono_cliente && !validarTelefono(filters.telefono_cliente)) {
+    if (
+      filters.telefono_cliente &&
+      !validarTelefono(filters.telefono_cliente)
+    ) {
       Swal.fire({
         title: "¡Error!",
         text: "Teléfono inválido. Debe tener 9 dígitos",
@@ -223,7 +226,15 @@ const ClientesFiltrados = () => {
       setClientes(data.detail);
       setErrores("");
     } catch (err) {
-      setError("Error al obtener los datos de clientes.");
+      /* setError("Error al obtener los datos de clientes."); */
+      Swal.fire({
+        title: "¡Error!",
+        text: "Cliente no existe.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      setLoading(false);
+      return;
     } finally {
       setLoading(false);
     }
@@ -288,12 +299,12 @@ const ClientesFiltrados = () => {
       });
     } catch (error) {}
   };
-  const abrirModalRegistroCliente = () => {
+  /*  const abrirModalRegistroCliente = () => {
     setMostrarModalRegistro(true);
   };
   const cerralModalRegistroCliente = () => {
     setMostrarModalRegistro(false);
-  };
+  }; */
 
   const cerrarModal = () => {
     setMostrarModal(false); // Oculta el modal
@@ -391,168 +402,161 @@ const ClientesFiltrados = () => {
   return (
     <>
       <Navbar />
-      <div style={{ padding: "0", boxShadow:"1px 1px 2px black" }} className="clientes-filtrados-container">
-  <div className="rowContainer">
-    <div>
-      <form className="filter-form" onSubmit={handleSubmit}>
-        <table>
-          <thead>
-            <tr>
-              <th>Sucursal</th>
-              <th>Nombre</th>
-              <th>RUT</th>
-              <th>Teléfono</th>
-              <th>Email</th>
-              <th>Fecha Desde</th>
-              <th>Fecha Hasta</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <select
-                /* style={{padding:"10px"}} */
-                  id="id_sucursal"
-                  name="id_sucursal"
-                  value={filters.id_sucursal}
-                  onChange={handleChange}
-                >
-                  <option disabled value="">
-                    Selecciona una sucursal
-                  </option>
-                  <option value="1">Sucursal 1</option>
-                  <option value="2">Sucursal 2</option>
-                  <option value="3">Sucursal 3</option>
-                </select>
-              {/*   {errores.id_sucursal && (
+      <div
+        style={{ padding: "0", boxShadow: "1px 1px 2px black" }}
+        className="clientes-filtrados-container"
+      >
+        <div className="rowContainer">
+          <div>
+            <form className="filter-form" onSubmit={handleSubmit}>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sucursal</th>
+                    <th>Nombre</th>
+                    <th>RUT</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Fecha Desde</th>
+                    <th>Fecha Hasta</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <select
+                        /* style={{padding:"10px"}} */
+                        id="id_sucursal"
+                        name="id_sucursal"
+                        value={filters.id_sucursal}
+                        onChange={handleChange}
+                      >
+                        <option disabled value="">
+                          Selecciona una sucursal
+                        </option>
+                        <option value="1">Sucursal 1</option>
+                        <option value="2">Sucursal 2</option>
+                        <option value="3">Sucursal 3</option>
+                      </select>
+                      {/*   {errores.id_sucursal && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.id_sucursal}
                   </span>
                 )} */}
-              </td>
-              <td>
-                <input
-                  type="text"
-                  id="nombre_cliente"
-                  name="nombre_cliente"
-                  value={filters.nombre_cliente}
-                  onChange={handleChange}
-                  placeholder="Nombre del cliente"
-                />
-               {/*  {errores.nombre_cliente && (
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="nombre_cliente"
+                        name="nombre_cliente"
+                        value={filters.nombre_cliente}
+                        onChange={handleChange}
+                        placeholder="Nombre del cliente"
+                      />
+                      {/*  {errores.nombre_cliente && (
                    <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.nombre_cliente}
                   </span> 
                 )} */}
-              </td>
-              <td>
-                <input
-                  type="text"
-                  id="rut_cliente"
-                  name="rut_cliente"
-                  value={filters.rut_cliente}
-                  onChange={handleChange}
-                  placeholder="RUT del cliente"
-                />
-              {/*   {errores.rut_cliente && (
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="rut_cliente"
+                        name="rut_cliente"
+                        value={filters.rut_cliente}
+                        onChange={handleChange}
+                        placeholder="RUT del cliente"
+                      />
+                      {/*   {errores.rut_cliente && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.rut_cliente}
                   </span>
                 )} */}
-              </td>
-              <td>
-                <input
-                  type="text"
-                  id="telefono_cliente"
-                  name="telefono_cliente"
-                  value={filters.telefono_cliente}
-                  onChange={handleChange}
-                  placeholder="Teléfono del cliente"
-                />
-                {/* {errores.telefono_cliente && (
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="telefono_cliente"
+                        name="telefono_cliente"
+                        value={filters.telefono_cliente}
+                        onChange={handleChange}
+                        placeholder="Teléfono del cliente"
+                      />
+                      {/* {errores.telefono_cliente && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.telefono_cliente}
                   </span>
                 )} */}
-              </td>
-              <td>
-                <input
-                  type="text"
-                  id="email_cliente"
-                  name="email_cliente"
-                  value={filters.email_cliente}
-                  onChange={handleChange}
-                  placeholder="ejemplo.123@gmail.com"
-                />
-               {/*  {errores.email_cliente && (
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="email_cliente"
+                        name="email_cliente"
+                        value={filters.email_cliente}
+                        onChange={handleChange}
+                        placeholder="ejemplo.123@gmail.com"
+                      />
+                      {/*  {errores.email_cliente && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.email_cliente}
                   </span>
                 )} */}
-              </td>
-              <td>
-                <input
-                  type="date"
-                  id="fecha_desde"
-                  name="fecha_desde"
-                  value={filters.fecha_desde}
-                  onChange={handleChange}
-                />
-                {/* {errores.rango_fechas && (
+                    </td>
+                    <td>
+                      <input
+                        type="date"
+                        id="fecha_desde"
+                        name="fecha_desde"
+                        value={filters.fecha_desde}
+                        onChange={handleChange}
+                      />
+                      {/* {errores.rango_fechas && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.rango_fechas}
                   </span>
                 )} */}
-              </td>
-              <td>
-                <input
-                  type="date"
-                  id="fecha_hasta"
-                  name="fecha_hasta"
-                  value={filters.fecha_hasta}
-                  onChange={handleChange}
-                />
-               {/*  {errores.rango_fechas && (
-                  <p style={{ color: "red", fontSize: "12px" }}>
-                    {errores.rango_fechas}
-                  </p> 
-                )}*/}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <button
-          style={{ backgroundColor: "#333", marginTop: "10px" }}
-          type="button"
-          onClick={abrirModalRegistroCliente}
-        >
-          Registrar Cliente
-        </button>
-        <button
-          style={{ backgroundColor: "#333", marginTop: "10px", marginLeft: "10px" }}
-          type="submit"
-          className="btn-submit"
-        >
-          Buscar Cliente
-        </button>
-        <button
-        type="button"
-          className="rojo"
-          onClick={() => limpiarfiltros()}
-          style={{ marginTop: "10px", marginLeft: "10px" }}
-        >
-          Limpiar Filtros
-        </button>
-      </form>
-    </div>
-    {modalRegitroCliente && (
-      <FormularioCliente cerralModalRegistroCliente={cerralModalRegistroCliente} />
-    )}
-  </div>
+                    </td>
+                    <td>
+                      <input
+                        type="date"
+                        id="fecha_hasta"
+                        name="fecha_hasta"
+                        value={filters.fecha_hasta}
+                        onChange={handleChange}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-  {loading && <p>Cargando...</p>}
-  {error && <p className="error">{error}</p>}
-</div>
+              <button
+                style={{
+                  backgroundColor: "#15616D",
+                  marginTop: "10px",
+                  marginLeft: "10px",
+                }}
+                type="submit"
+                className="btn-submit"
+              >
+                Buscar Cliente
+              </button>
+              <button
+                type="button"
+                className="rojo"
+                onClick={() => limpiarfiltros()}
+                style={{ marginTop: "10px", marginLeft: "10px", backgroundColor:"#333" }}
+              >
+                Limpiar Filtros
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {loading && <p>Cargando...</p>}
+        {error && <p className="error">{error}</p>}
+      </div>
 
       <div className="clientes-grid">
         {clientes.length > 0 ? (
@@ -570,19 +574,25 @@ const ClientesFiltrados = () => {
         {clientes.length > 0 ? (
           <div
             style={{
-              
               overflowY: "auto",
               marginBottom: "30px",
-              display:"flex",
-              justifyContent:"center"
+              display: "flex",
+              justifyContent: "center",
             }}
           >
-            <table className="table-filter" /* id="table-height" */ style={{textAlign:"center", width: "90%", borderCollapse:"collapse" }}>
+            <table
+              className="table-filter"
+              /* id="table-height" */ style={{
+                textAlign: "center",
+                width: "90%",
+                borderCollapse: "collapse",
+              }}
+            >
               <thead style={{}}>
                 <tr>
                   <th
                     style={{
-                     /*  backgroundColor: "#333", */
+                      /*  backgroundColor: "#333", */
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -661,50 +671,46 @@ const ClientesFiltrados = () => {
                     <td>{cliente.telefono_cliente}</td>
                     <td>{cliente.rut_cliente}</td>
                     <td>
-                      
-                        { new Date(cliente.fecha_registro)
-                          .toISOString()
-                          .split("T")[0]
-                          .split("-")
-                          .reverse()
-                          .join("-")
-                      }
-                      
+                      {new Date(cliente.fecha_registro)
+                        .toISOString()
+                        .split("T")[0]
+                        .split("-")
+                        .reverse()
+                        .join("-")}
                     </td>
-                    <td
-                    
-                    >
-                      <div   style={{
-                        
-                        display: "flex",
-                        flexDirection:"row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        /* height: "100%", */
-                      }}>
-                      <button
-                        className="boton-eliminar"
-                        onClick={() => abrirModalEdicion(cliente)}
+                    <td>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          /* height: "100%", */
+                        }}
                       >
-                        <img
-                          style={{ width: "15px" }}
-                          src="public/pencil.svg"
-                          alt="icon"
-                        />
-                      </button>
-                      <button
-                        style={{ marginLeft: "5px" }}
-                        className="boton-eliminar"
-                        onClick={() => EliminarCliente(cliente)}
-                      >
-                        <img
-                          style={{ width: "15px" }}
-                          src="public/delete.svg"
-                          alt="icon"
-                        />
-                      </button>  
+                        <button
+                        style={{backgroundColor:"#15616D"}}
+                          /* className="boton-eliminar" */
+                          onClick={() => abrirModalEdicion(cliente)}
+                        >
+                          <img
+                            style={{ width: "15px" }}
+                            src="public/pencil.svg"
+                            alt="icon"
+                          />
+                        </button>
+                        <button
+                          style={{ marginLeft: "5px" }}
+                          className="boton-eliminar"
+                          onClick={() => EliminarCliente(cliente)}
+                        >
+                          <img
+                            style={{ width: "15px" }}
+                            src="public/delete.svg"
+                            alt="icon"
+                          />
+                        </button>
                       </div>
-                      
                     </td>
                   </tr>
                 ))}
@@ -719,112 +725,120 @@ const ClientesFiltrados = () => {
       {/* Modal para editar cliente */}
       {mostrarModal && (
         <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={cerrarModal}>
+          <div style={{backgroundColor:"#FFECD1"}} className="modal-content">
+            <span style={{fontSize:"20px", cursor:"pointer"}} className="close" onClick={cerrarModal}>
               &times;
             </span>
             <h4 style={{ margin: "5px", textAlign: "center" }}>
               Actualizar Cliente
             </h4>
-            <form>
-              <div className="form-group">
-                <label htmlFor="nombre_cliente">Nombre</label>
-                <input
-                  type="text"
-                  id="nombre_cliente"
-                  name="nombre_cliente"
-                  value={clienteSeleccionado.nombre_cliente}
-                  onChange={manejarEdicion}
-                />
-                {errorEditar.nombre_cliente && (
-                  <span
-                    style={{ color: "red", fontSize: "12px" }}
-                    className="error"
-                  >
-                    {errorEditar.nombre_cliente}
-                  </span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="email_cliente">Email</label>
-                <input
-                  type="email"
-                  id="email_cliente"
-                  name="email_cliente"
-                  value={clienteSeleccionado.email_cliente}
-                  onChange={manejarEdicion}
-                />
-                {errorEditar.email_cliente && (
-                  <span
-                    style={{ color: "red", fontSize: "12px" }}
-                    className="error"
-                  >
-                    {errorEditar.email_cliente}
-                  </span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="telefono_cliente">Teléfono</label>
-                <input
-                  type="text"
-                  id="telefono_cliente"
-                  name="telefono_cliente"
-                  value={clienteSeleccionado.telefono_cliente}
-                  onChange={manejarEdicion}
-                />
-                {errorEditar.telefono_cliente && (
-                  <span
-                    style={{ color: "red", fontSize: "12px" }}
-                    className="error"
-                  >
-                    {errorEditar.telefono_cliente}
-                  </span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="rut_cliente">RUT</label>
-                <input
-                  type="text"
-                  id="rut_cliente"
-                  name="rut_cliente"
-                  value={clienteSeleccionado.rut_cliente}
-                  onChange={manejarEdicion}
-                />
-                {errorEditar.rut_cliente && (
-                  <span
-                    style={{ color: "red", fontSize: "12px" }}
-                    className="error"
-                  >
-                    {errorEditar.rut_cliente}
-                  </span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="id_sucursal">Sucursal</label>
-                <input
-                  type="text"
-                  id="id_sucursal"
-                  name="id_sucursal"
-                  value={clienteSeleccionado.id_sucursal}
-                  onChange={manejarEdicion}
-                />
-                {errorEditar.id_sucursal && (
-                  <span
-                    style={{ color: "red", fontSize: "12px" }}
-                    className="error"
-                  >
-                    {errorEditar.id_sucursal}
-                  </span>
-                )}
-              </div>
-
-              <button
-                type="button"
-                className="btn-guardar"
-                onClick={guardarCliente}
-              >
-                Guardar
-              </button>
+            <form style={{display:"flex",justifyContent:"center"}}>
+              <table className="form-table">
+                <tbody>
+                  <tr>
+                    <td>
+                      <label htmlFor="nombre_cliente">Nombre</label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="nombre_cliente"
+                        name="nombre_cliente"
+                        value={clienteSeleccionado.nombre_cliente}
+                        onChange={manejarEdicion}
+                      />
+                      {errorEditar.nombre_cliente && (
+                        <span className="error">
+                          {errorEditar.nombre_cliente}
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label htmlFor="email_cliente">Email</label>
+                    </td>
+                    <td>
+                      <input
+                        type="email"
+                        id="email_cliente"
+                        name="email_cliente"
+                        value={clienteSeleccionado.email_cliente}
+                        onChange={manejarEdicion}
+                      />
+                      {errorEditar.email_cliente && (
+                        <span className="error">
+                          {errorEditar.email_cliente}
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label htmlFor="telefono_cliente">Teléfono</label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="telefono_cliente"
+                        name="telefono_cliente"
+                        value={clienteSeleccionado.telefono_cliente}
+                        onChange={manejarEdicion}
+                      />
+                      {errorEditar.telefono_cliente && (
+                        <span className="error">
+                          {errorEditar.telefono_cliente}
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label htmlFor="rut_cliente">RUT</label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="rut_cliente"
+                        name="rut_cliente"
+                        value={clienteSeleccionado.rut_cliente}
+                        onChange={manejarEdicion}
+                      />
+                      {errorEditar.rut_cliente && (
+                        <span className="error">{errorEditar.rut_cliente}</span>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label htmlFor="id_sucursal">Sucursal</label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="id_sucursal"
+                        name="id_sucursal"
+                        value={clienteSeleccionado.id_sucursal}
+                        onChange={manejarEdicion}
+                      />
+                      {errorEditar.id_sucursal && (
+                        <span className="error">{errorEditar.id_sucursal}</span>
+                      )}
+                    </td>
+                  </tr>
+                  <tr  >
+                    <td  colSpan="2" className="button-row">
+                    </td>
+                      <button style={{backgroundColor:"#15616D"}}
+                        type="button"
+                        className="btn-guardar"
+                        onClick={guardarCliente}
+                      >
+                        Guardar
+                      </button>
+                  </tr>
+                </tbody>
+              </table>
             </form>
           </div>
         </div>

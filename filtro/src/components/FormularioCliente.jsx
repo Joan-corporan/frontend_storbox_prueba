@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import "./login.css"
 import Swal from 'sweetalert2'; 
+import { useNavigate } from 'react-router';
+import Navbar from './Navbar';
 
 const FormularioCliente = ({ cerralModalRegistroCliente }) => {
   const [cliente, setCliente] = useState({
@@ -11,11 +13,10 @@ const FormularioCliente = ({ cerralModalRegistroCliente }) => {
     telefono_cliente: '',
     rut_cliente: '',
   });
+  const navigate=useNavigate()
   const [errores, setErrores] = useState({});
   const[errorMensaje,setErrorMensaje]= useState("")
-  /* const[modalCerrado,setCerrarModal]=useState(false) */
- 
-  /* const {mostrarAlerta}= SweetAlert() */
+  
   // Funciones de validación
   const validarNombre = (nombre) => {
     const regex = /^[a-zA-ZñáéíóúÁÉÍÓ��\s]+$/;
@@ -126,11 +127,12 @@ const FormularioCliente = ({ cerralModalRegistroCliente }) => {
 
   return (
     <>
-     <div className="modal">
+    <Navbar/>
+     <div /* className="modal" */>
           <div className="modal-content">
-            <span className="close" onClick={cerralModalRegistroCliente}>
+           {/*  <span className="close" onClick={cerralModalRegistroCliente}>
               &times;
-            </span>
+            </span> */}
             <h4 style={{margin:"5px", textAlign:"center"}}>Crear nuevo cliente</h4>
            
     <form onSubmit={handleSubmit} className="form-cliente">

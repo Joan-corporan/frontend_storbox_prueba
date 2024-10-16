@@ -73,8 +73,8 @@ export const ListaDeUser = () => {
           <thead>
             <tr>
               <th
-                style={{
-                  backgroundColor: "#333",
+                   style={{
+                  backgroundColor: "#15616d",
                   position: "sticky",
                   top: 0,
                   zIndex: 1,
@@ -83,8 +83,8 @@ export const ListaDeUser = () => {
                 Rut
               </th>
               <th
-                style={{
-                  backgroundColor: "#333",
+                   style={{
+                  backgroundColor: "#15616d",
                   position: "sticky",
                   top: 0,
                   zIndex: 1,
@@ -94,7 +94,7 @@ export const ListaDeUser = () => {
               </th>
               <th
                 style={{
-                  backgroundColor: "#333",
+                  backgroundColor: "#15616d",
                   position: "sticky",
                   top: 0,
                   zIndex: 1,
@@ -103,8 +103,8 @@ export const ListaDeUser = () => {
                 Fecha de Registro
               </th>
               <th
-                style={{
-                  backgroundColor: "#333",
+                   style={{
+                  backgroundColor: "#15616d",
                   position: "sticky",
                   top: 0,
                   zIndex: 1,

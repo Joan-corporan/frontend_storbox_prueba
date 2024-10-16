@@ -36,7 +36,7 @@ const Register = () => {
     return regex.test(nombre);  
   };
 
-  const handleSunmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     const nuevoErrores = {};
@@ -47,24 +47,44 @@ const Register = () => {
     ) {
       return Swal.fire({
         title: "¡Error!",
-        text: `Debes llenar los campos RUT y Contraseña`,
+        text: `Debes llenar los campos RUT, Nombre y Contraseña`,
         icon: "error",
         confirmButtonText: "Aceptar",
       });
     }
     if (!token) {
-      alert("No se encontró el token de autenticación. Inicia sesión.");
-      return;
+      return Swal.fire({
+        title: "¡Error!",
+        text:"No se encontró el token de autenticación. Inicia sesión."   ,
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      }); 
+      
+      
     }
     if (!validarRut(userR.rut)) {
-      nuevoErrores.rut = "El rut ingresado no es válido";
+      return Swal.fire({
+        title: "¡Error!",
+        text:"El rut ingresado no es válido"   ,
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });  ;
     }
     if (!validarContraseña(userR.password)) {
-      nuevoErrores.password =
-        "La contraseña debe tener al menos 6 caracteres, incluir una letra mayúscula, una letra minúscula y un número";
+      return Swal.fire({
+        title: "¡Error!",
+        text:"La contraseña debe tener al menos 6 caracteres, incluir una letra mayúscula, una letra minúscula y un número"   ,
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      }); 
     }
     if(!validarNombre(userR.name)){
-        nuevoErrores.name = "El nombre ingresado no es válido";
+      return Swal.fire({
+        title: "¡Error!",
+        text: "El nombre ingresado no es válido",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      }); 
     }
     if (userR.password !== userR.confirmPassword) {
       return Swal.fire({
@@ -75,11 +95,7 @@ const Register = () => {
       });
     }
     try {
-      if (Object.keys(nuevoErrores).length > 0) {
-        setErrores(nuevoErrores);
-        console.log(nuevoErrores);
-        console.log(errores.id_sucursal);
-      } else {
+     
         const response = await axios.post(
           "http://localhost:3000/api/clients/api/registrarse",
           userR,
@@ -104,7 +120,7 @@ const Register = () => {
             confirmButtonText: 'Aceptar',
           });
           setErrores("");
-      }
+      
     } catch (error) {
       console.error("Error al registrar", error);
       Swal.fire({
@@ -122,92 +138,102 @@ const Register = () => {
   return (
     <>
       <Navbar />
-      <div className="container">
+      <div style={{
+        width: "40%",
+        height:"65vh",
+        margin: "0 auto",
+        padding: "20px",
+        boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+        borderRadius: "5px",
+        backgroundColor: "#f2f2f2",
+        marginTop: "50px",
+        marginBottom: "50px",
+      }} /* className="container" */>
         <h2>Registrar Personal</h2>
-        <form onSubmit={handleSunmit}>
-          <label>Rut:</label>
+        <form onSubmit={handleSubmit} style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}>
+  <table style={{display:"flex",justifyContent:"center"}} className="form-table-register">
+    <tbody>
+      <tr>
+        <td>
+          <label htmlFor="rut">Rut:</label>
+        </td>
+        <td>
           <input
             onChange={handleChange}
-            style={{ margin: "0" }}
             type="text"
             name="rut"
             value={userR.rut}
-             placeholder="12345678-2"
+            placeholder="12345678-2"
             /* required */
           />
-          {errores.rut && (
-            <span style={{ color: "red", fontSize: "12px" }}>
-              {errores.rut}
-            </span>
-          )}
-           <label>Nombre:</label>
+        
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="name">Nombre:</label>
+        </td>
+        <td>
           <input
             onChange={handleChange}
-            style={{ margin: "0" }}
             type="text"
             name="name"
             value={userR.name}
-             placeholder="Pedro"
+            placeholder="Pedro"
             /* required */
           />
-          {errores.name && (
-            <span style={{ color: "red", fontSize: "12px" }}>
-              {errores.name}
-            </span>
-          )}
-          <label>Contraseña:</label>
+        
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="password">Contraseña:</label>
+        </td>
+        <td>
           <input
             onChange={handleChange}
-            style={{ margin: "0" }}
             type="password"
             name="password"
             value={userR.password}
             placeholder="Ejemplo123"
             /* required */
           />
-          {errores.password && (
-            <span style={{ color: "red", fontSize: "12px" }}>
-              {errores.password}
-            </span>
-          )}
-
-          <label>Repetir Contraseña:</label>
+        
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label htmlFor="confirmPassword">Repetir Contraseña:</label>
+        </td>
+        <td>
           <input
             onChange={handleChange}
-            style={{ margin: "0" }}
             type="password"
             name="confirmPassword"
             value={userR.confirmPassword}
-             placeholder="Ejemplo123"
+            placeholder="Ejemplo123"
             /* required */
           />
-          {/* {errores.password&& <span style={{ color: "red", fontSize: "12px" }}>
-          La contraseña que ingresaste no coincide con la contraseña anterior
-        </span>} */}
-
-          {/* <span style={{ marginTop: "10px" }}>
-            ¿Registrar Nuevo Administrador?
-          </span>
-          <span>
-            <input
-              style={{
-                textAlign: "initial",
-                marginLeft: "10px",
-                marginTop: "10px",
-                backgroundColor: "blue",
-                color: "white",
-                cursor: "pointer",
-              }}
-              type="checkbox"
-            />
-          </span> */}
+        </td>
+      </tr>
+      <tr>
+        <td colSpan="2" className="button-row">
           <button
-            style={{ backgroundColor: "green", marginTop: "10px" }}
+            style={{ backgroundColor: "#15616D", marginTop: "10px" }}
             type="submit"
           >
             Registrarse
           </button>
-        </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
       </div>
     </>
   );

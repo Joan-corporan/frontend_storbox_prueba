@@ -16,8 +16,11 @@ const Navbar = () => {
     navegate("/login");
   };
 
-  const btnRegistrarCliente = () => {
+  const btnRegistrarPersonal = () => {
     navegate("/register");
+  };
+  const btnRegistrarCliente = () => {
+    navegate("/registro-cliente");
   };
 
   const btnListaUsers = () => {
@@ -65,12 +68,15 @@ const Navbar = () => {
                 Inicio
               </button>
               <button onClick={btnRegistrarCliente} className="register-button">
+                Registrar Cliente
+              </button>
+              <button onClick={btnRegistrarPersonal} className="register-button">
                 Registrar Personal
               </button>
               <button onClick={btnListaUsers} className="register-button">
                 Lista de Usuarios
               </button>
-              <button onClick={handleLogout} className="login-button">
+              <button onClick={handleLogout} className="register-button">
                 Cerrar Sesion
               </button>
             </motion.div>
