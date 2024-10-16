@@ -1,39 +1,43 @@
-// Navbar.js
-import React from "react";
-import "./login.css";
+import React, { useState } from "react";
+/* import "./login.css"; */
+import { motion } from "framer-motion";
+import "./estilosNavbar.css";
 import { useNavigate } from "react-router";
 
 const Navbar = () => {
   const navegate = useNavigate();
-  
-  const nombreUserLogiado=  localStorage.getItem("userName");
-  
-  console.log(nombreUserLogiado)
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const nombreUserLogiado = localStorage.getItem("userName");
+
   const handleLogout = () => {
-    // Elimina el token del almacenamiento local
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
-
-
-    // Redirige al usuario a la página de inicio de sesión
     navegate("/login");
   };
+
   const btnRegistrarCliente = () => {
     navegate("/register");
   };
+
   const btnListaUsers = () => {
     navegate("/lista-users");
   };
+
   const btnInicio = () => {
     navegate("/clientes-filtrados");
   };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
     <nav
       style={{
-        backgroundColor: "#333",
         color: "#fff",
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
         alignItems: "center",
         padding: "15px",
         width: "100%",
@@ -42,57 +46,54 @@ const Navbar = () => {
       }}
       className="navbar"
     >
-      <div style={{ marginLeft: "20px" }} className="navbar-title">
+      <div className="userbotonHamburguesa">
+       
+        <div className="navbar-options">
+          <button
+            onClick={toggleMenu}
+            
+            className="hamburger-button"
+          >
+            &#9776; {/* Icono de menú hamburguesa */}
+          </button>
+
+          {menuOpen && (
+            <motion.div className="menu"initial={{ opacity: 0, x: "-100%" }} // Posición inicial
+            animate={menuOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: "-100%" }} // Animación según el estado
+            transition={{ duration: 0.5, ease: "easeInOut" }} >
+              <button onClick={btnInicio} className="register-button">
+                Inicio
+              </button>
+              <button onClick={btnRegistrarCliente} className="register-button">
+                Registrar Personal
+              </button>
+              <button onClick={btnListaUsers} className="register-button">
+                Lista de Usuarios
+              </button>
+              <button onClick={handleLogout} className="login-button">
+                Cerrar Sesion
+              </button>
+            </motion.div>
+          )}
+       
+        </div>
+      </div>
+      <div /* style={{ marginLeft: "20px" }} */ className="navbar-title">
         Gestor de Clientes
       </div>
-      <h4>User:<span>{nombreUserLogiado}</span></h4>
-      <div className="navbar-options">
-        <button
-          onClick={() => {
-            btnInicio();
-          }}
-          style={{ marginRight: "10px" }}
-          className="register-button"
-        >
-          Inicio
-        </button>
-
-        <button
-          onClick={() => {
-            btnRegistrarCliente();
-          }}
-          className="register-button"
-        >
-          Registrar Personal
-        </button>
-        <button
-          className="register-button"
-          onClick={() => {
-            btnListaUsers();
-          }}
-          style={{
-            /* backgroundColor: "#218838", */
-            marginRight: "10px",
-            marginLeft: "10px",
-          }}
-        >
-          Lista de Usuarios
-        </button>
-
-        <button
-          onClick={() => {
-            handleLogout();
-          }}
-          style={{
-            backgroundColor: "red",
-            marginLeft: "5px",
-            marginRight: "15px",
-          }}
-          className="login-button"
-        >
-          Cerrar Sesion
-        </button>
-      </div>
+  <h4>
+          <span
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {nombreUserLogiado}
+            <img style={{marginLeft:"10px"}} src="public/user.svg" alt="" />
+          </span>
+        </h4>
+      
     </nav>
   );
 };

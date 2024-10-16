@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./ClientesFiltrados.css"; // Estilos externos
+import "./estilosTableClienteFiltrados.css"; // Estilos externos
+
 import FormularioCliente from "./FormularioCliente";
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
@@ -96,53 +98,90 @@ const ClientesFiltrados = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const nuevosErrores = {};
-    if (filters.id_sucursal > 3) {
-      nuevosErrores.id_sucursal =
-        "Error en la sucursal. Solo valores entre 1 y 3";
-    }
-    // Validaciones
     if (filters.id_sucursal && !validarSucursal(filters.id_sucursal)) {
-      nuevosErrores.id_sucursal =
-        "Sucursal inválido. Solo tipo números positivos";
+      Swal.fire({
+        title: "¡Error!",
+        text: "Sucursal inválida. Solo tipo números positivos",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      setLoading(false);
+      return;
     }
     if (filters.nombre_cliente && !validarNombre(filters.nombre_cliente)) {
-      nuevosErrores.nombre_cliente = "Nombre inválido. Solo tipo texto";
+      Swal.fire({
+        title: "¡Error!",
+        text: "Nombre inválido. Solo tipo texto",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      setLoading(false);
+      return;
     }
     if (filters.fecha_desde && !validarFechaDesde(filters.fecha_desde)) {
-      nuevosErrores.fecha_desde = "Fecha inválido. Debe ser formato fecha";
+      Swal.fire({
+        title: "¡Error!",
+        text: "Fecha desde inválida. Debe ser formato fecha",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      setLoading(false);
+      return;
     }
     if (filters.fecha_hasta && !validarFechaHasta(filters.fecha_hasta)) {
-      nuevosErrores.fecha_hasta = "Fecha inválido. Debe ser formato fecha";
+      Swal.fire({
+        title: "¡Error!",
+        text: "Fecha hasta inválida. Debe ser formato fecha",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      setLoading(false);
+      return;
     }
     if (
       filters.fecha_desde &&
       filters.fecha_hasta &&
       !validarRangoFechas(filters.fecha_desde, filters.fecha_hasta)
     ) {
-      nuevosErrores.rango_fechas =
-        "La fecha 'desde' no puede ser mayor que la fecha 'hasta'.";
-    }
-    if (filters.email_cliente && !validarEmail(filters.email_cliente)) {
-      nuevosErrores.email_cliente = "Email inválido. Debe ser formato email";
-    }
-    if (
-      filters.telefono_cliente &&
-      !validarTelefono(filters.telefono_cliente)
-    ) {
-      nuevosErrores.telefono_cliente =
-        "Teléfono inválido. Debe tener 9 dígitos";
-    }
-    if (filters.rut_cliente && !validarRut(filters.rut_cliente)) {
-      nuevosErrores.rut_cliente = "RUT inválido. Debe ser formato rut";
-    }
-
-    if (Object.keys(nuevosErrores).length > 0) {
-      setErrores(nuevosErrores);
+      Swal.fire({
+        title: "¡Error!",
+        text: "La fecha 'desde' no puede ser mayor que la fecha 'hasta'.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
       setLoading(false);
       return;
     }
-
+    if (filters.email_cliente && !validarEmail(filters.email_cliente)) {
+      Swal.fire({
+        title: "¡Error!",
+        text: "Email inválido. Debe ser formato email",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      setLoading(false);
+      return;
+    }
+    if (filters.telefono_cliente && !validarTelefono(filters.telefono_cliente)) {
+      Swal.fire({
+        title: "¡Error!",
+        text: "Teléfono inválido. Debe tener 9 dígitos",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      setLoading(false);
+      return;
+    }
+    if (filters.rut_cliente && !validarRut(filters.rut_cliente)) {
+      Swal.fire({
+        title: "¡Error!",
+        text: "RUT inválido. Debe ser formato rut",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      setLoading(false);
+      return;
+    }
     // Formatear las fechas
     const fechaDesdeFormateada = filters.fecha_desde
       ? new Date(filters.fecha_desde).toISOString().split("T")[0]
@@ -352,33 +391,46 @@ const ClientesFiltrados = () => {
   return (
     <>
       <Navbar />
-      <div style={{ padding: "0" }} className="clientes-filtrados-container">
-        <div className="rowContainer">
-          <div>
-            <h1>Filtrar Clientes</h1>
-            <form className="filter-form" onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="id_sucursal">Sucursal</label>
+      <div style={{ padding: "0", boxShadow:"1px 1px 2px black" }} className="clientes-filtrados-container">
+  <div className="rowContainer">
+    <div>
+      <form className="filter-form" onSubmit={handleSubmit}>
+        <table>
+          <thead>
+            <tr>
+              <th>Sucursal</th>
+              <th>Nombre</th>
+              <th>RUT</th>
+              <th>Teléfono</th>
+              <th>Email</th>
+              <th>Fecha Desde</th>
+              <th>Fecha Hasta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
                 <select
+                /* style={{padding:"10px"}} */
                   id="id_sucursal"
                   name="id_sucursal"
                   value={filters.id_sucursal}
                   onChange={handleChange}
-                  placeholder="Selecciona una sucursal"
                 >
-                  <option disabled value="">Selecciona una sucursal</option>
+                  <option disabled value="">
+                    Selecciona una sucursal
+                  </option>
                   <option value="1">Sucursal 1</option>
                   <option value="2">Sucursal 2</option>
                   <option value="3">Sucursal 3</option>
                 </select>
-                {errores.id_sucursal && (
+              {/*   {errores.id_sucursal && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.id_sucursal}
                   </span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="nombre_cliente">Nombre</label>
+                )} */}
+              </td>
+              <td>
                 <input
                   type="text"
                   id="nombre_cliente"
@@ -387,14 +439,13 @@ const ClientesFiltrados = () => {
                   onChange={handleChange}
                   placeholder="Nombre del cliente"
                 />
-                {errores.nombre_cliente && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
+               {/*  {errores.nombre_cliente && (
+                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.nombre_cliente}
-                  </span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="rut_cliente">RUT</label>
+                  </span> 
+                )} */}
+              </td>
+              <td>
                 <input
                   type="text"
                   id="rut_cliente"
@@ -403,14 +454,13 @@ const ClientesFiltrados = () => {
                   onChange={handleChange}
                   placeholder="RUT del cliente"
                 />
-                {errores.rut_cliente && (
+              {/*   {errores.rut_cliente && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.rut_cliente}
                   </span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="telefono_cliente">Teléfono Cliente</label>
+                )} */}
+              </td>
+              <td>
                 <input
                   type="text"
                   id="telefono_cliente"
@@ -419,30 +469,28 @@ const ClientesFiltrados = () => {
                   onChange={handleChange}
                   placeholder="Teléfono del cliente"
                 />
-                {errores.telefono_cliente && (
+                {/* {errores.telefono_cliente && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.telefono_cliente}
                   </span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="email_cliente">Email</label>
+                )} */}
+              </td>
+              <td>
                 <input
                   type="text"
                   id="email_cliente"
                   name="email_cliente"
-                  placeholder="ejemplo.123@gmail.com"
                   value={filters.email_cliente}
                   onChange={handleChange}
+                  placeholder="ejemplo.123@gmail.com"
                 />
-                {errores.email_cliente && (
+               {/*  {errores.email_cliente && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.email_cliente}
                   </span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="fecha_desde">Fecha Desde</label>
+                )} */}
+              </td>
+              <td>
                 <input
                   type="date"
                   id="fecha_desde"
@@ -450,15 +498,13 @@ const ClientesFiltrados = () => {
                   value={filters.fecha_desde}
                   onChange={handleChange}
                 />
-
-                {errores.rango_fechas && (
+                {/* {errores.rango_fechas && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     {errores.rango_fechas}
                   </span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="fecha_hasta">Fecha Hasta</label>
+                )} */}
+              </td>
+              <td>
                 <input
                   type="date"
                   id="fecha_hasta"
@@ -466,44 +512,48 @@ const ClientesFiltrados = () => {
                   value={filters.fecha_hasta}
                   onChange={handleChange}
                 />
-
-                {errores.rango_fechas && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
+               {/*  {errores.rango_fechas && (
+                  <p style={{ color: "red", fontSize: "12px" }}>
                     {errores.rango_fechas}
-                  </span>
-                )}
-              </div>
-              <button
-                style={{ backgroundColor: "#333" }}
-                type="button"
-                onClick={abrirModalRegistroCliente}
-              >
-                Registrar Cliente
-              </button>
-              <button
-                style={{ backgroundColor: "#333" }}
-                type="submit"
-                className="btn-submit"
-              >
-                Buscar Cliente
-              </button>
-            </form>
-            <button className="rojo " onClick={() => limpiarfiltros()}>
-              Limpiar Filtros
-            </button>
-          </div>
-          <div>
-            {modalRegitroCliente && (
-              <FormularioCliente
-                cerralModalRegistroCliente={cerralModalRegistroCliente}
-              />
-            )}
-          </div>
-        </div>
+                  </p> 
+                )}*/}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {/* <button
+          style={{ backgroundColor: "#333", marginTop: "10px" }}
+          type="button"
+          onClick={abrirModalRegistroCliente}
+        >
+          Registrar Cliente
+        </button> */}
+        <button
+          style={{ backgroundColor: "#333", marginTop: "10px", marginLeft: "10px" }}
+          type="submit"
+          className="btn-submit"
+        >
+          Buscar Cliente
+        </button>
+        <button
+        type="button"
+          className="rojo"
+          onClick={() => limpiarfiltros()}
+          style={{ marginTop: "10px", marginLeft: "10px" }}
+        >
+          Limpiar Filtros
+        </button>
+      </form>
+    </div>
+    {modalRegitroCliente && (
+      <FormularioCliente cerralModalRegistroCliente={cerralModalRegistroCliente} />
+    )}
+  </div>
 
-        {loading && <p>Cargando...</p>}
-        {error && <p className="error">{error}</p>}
-      </div>
+  {loading && <p>Cargando...</p>}
+  {error && <p className="error">{error}</p>}
+</div>
+
       <div className="clientes-grid">
         {clientes.length > 0 ? (
           <div className="contenedor_botones">
@@ -520,17 +570,19 @@ const ClientesFiltrados = () => {
         {clientes.length > 0 ? (
           <div
             style={{
-              height: "500px",
+              
               overflowY: "auto",
               marginBottom: "30px",
+              display:"flex",
+              justifyContent:"center"
             }}
           >
-            <table /* id="table-height" */ style={{ width: "90%" }}>
-              <thead>
+            <table className="table-filter" /* id="table-height" */ style={{textAlign:"center", width: "90%", borderCollapse:"collapse" }}>
+              <thead style={{}}>
                 <tr>
                   <th
                     style={{
-                      backgroundColor: "#333",
+                     /*  backgroundColor: "#333", */
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -540,7 +592,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      backgroundColor: "#333",
+                      /* backgroundColor: "#333", */
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -550,7 +602,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      backgroundColor: "#333",
+                      /* backgroundColor: "#333", */
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -560,7 +612,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      backgroundColor: "#333",
+                      /* backgroundColor: "#333", */
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -570,7 +622,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      backgroundColor: "#333",
+                      /* backgroundColor: "#333", */
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -580,7 +632,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      backgroundColor: "#333",
+                      /* backgroundColor: "#333", */
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -590,7 +642,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      backgroundColor: "#333",
+                      /* backgroundColor: "#333", */
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -620,13 +672,16 @@ const ClientesFiltrados = () => {
                       
                     </td>
                     <td
-                      style={{
+                    
+                    >
+                      <div   style={{
+                        
                         display: "flex",
+                        flexDirection:"row",
                         justifyContent: "center",
                         alignItems: "center",
                         /* height: "100%", */
-                      }}
-                    >
+                      }}>
                       <button
                         className="boton-eliminar"
                         onClick={() => abrirModalEdicion(cliente)}
@@ -647,7 +702,9 @@ const ClientesFiltrados = () => {
                           src="public/delete.svg"
                           alt="icon"
                         />
-                      </button>
+                      </button>  
+                      </div>
+                      
                     </td>
                   </tr>
                 ))}

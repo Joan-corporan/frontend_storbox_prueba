@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Swal from "sweetalert2";
+import"./estilosTableListUser.css"
 
 import "./login.css";
 
@@ -68,7 +69,7 @@ export const ListaDeUser = () => {
           width: "90%",
         }}
       >
-        <table style={{ width: "90%", margin: "0 auto" }}>
+        <table className="tabla-U" style={{ width: "90%", margin: "0 auto" }}>
           <thead>
             <tr>
               <th

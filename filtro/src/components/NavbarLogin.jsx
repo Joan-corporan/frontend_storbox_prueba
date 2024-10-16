@@ -25,6 +25,7 @@ const NavbarLogin = () => {
         backgroundColor: "#333",
         color: "#fff",
         display: "flex",
+        
         justifyContent: "space-between",
         alignItems: "center",
         padding: "15px",
