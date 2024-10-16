@@ -521,13 +521,13 @@ const ClientesFiltrados = () => {
             </tr>
           </tbody>
         </table>
-        {/* <button
+        <button
           style={{ backgroundColor: "#333", marginTop: "10px" }}
           type="button"
           onClick={abrirModalRegistroCliente}
         >
           Registrar Cliente
-        </button> */}
+        </button>
         <button
           style={{ backgroundColor: "#333", marginTop: "10px", marginLeft: "10px" }}
           type="submit"
