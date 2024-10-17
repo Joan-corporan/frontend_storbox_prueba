@@ -49,7 +49,13 @@ console.log(".........................................")
       });
     }
     if (!validarPassword(loginUser.password)) {
-      nuevoError.password = "El formato de la contraseña no es válido";
+      return  Swal.fire({
+        title: "¡Error!",
+        text: "El formato de la contraseña no es válido" ,
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      
     }
     if (!validateRut(formatRut(loginUser.rut))) {
       return  Swal.fire({
@@ -61,10 +67,7 @@ console.log(".........................................")
       
     }
     try {
-      if (Object.keys(nuevoError).length > 0) {
-        seterrorMensaje(nuevoError);
-        return;
-      } else {
+      
         const response = await axios.post(
           "http://localhost:3000/api/clients/api/login",
           loginUser
@@ -81,7 +84,7 @@ console.log(".........................................")
         console.log(message);
         navigate("/clientes-filtrados");
         console.log(response.data);
-      }
+      
     } catch (error) {
       Swal.fire({
         title: "¡Error!",
