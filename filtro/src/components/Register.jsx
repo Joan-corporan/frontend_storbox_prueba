@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import "./login.css"; // Asegúrate de importar el archivo CSS
 import axios from "axios";
 import Swal from "sweetalert2";
+import { motion } from 'framer-motion';
 
 import Navbar from "./Navbar";
 
@@ -138,7 +139,7 @@ const Register = () => {
   return (
     <>
       <Navbar />
-      <div style={{
+      <motion.div style={{
         width: "40%",
         height:"65vh",
         margin: "0 auto",
@@ -148,7 +149,12 @@ const Register = () => {
         backgroundColor: "#f2f2f2",
         marginTop: "50px",
         marginBottom: "50px",
-      }}>
+      }}
+      initial={{ x: '-100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+      animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+      exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+      transition={{ duration: 1 }} // Duración de la animación
+      >
         <h2>Registrar Personal</h2>
         <form onSubmit={handleSubmit} style={{
           display: "flex",
@@ -234,7 +240,7 @@ const Register = () => {
   </table>
 </form>
 
-      </div>
+      </motion.div>
     </>
   );
 };

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Swal from "sweetalert2";
 import"./estilosTableListUser.css"
+import { motion } from 'framer-motion';
 
 import "./login.css";
 
@@ -57,10 +58,15 @@ export const ListaDeUser = () => {
   return (
     <>
       <Navbar />
-      <div>
+      <motion.div 
+       initial={{ x: '-100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+       animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+       exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+       transition={{ duration: 1 }} // Duración de la animación
+       >
         <h1>Lista de usuarios</h1>
-      </div>
-      <div
+      </motion.div>
+      <motion.div
         style={{
           height: "400px",
           marginTop: "30px",
@@ -68,6 +74,10 @@ export const ListaDeUser = () => {
           marginBottom: "30px",
           width: "90%",
         }}
+        initial={{ x: '-100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+        animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+        exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+        transition={{ duration: 1 }} // Duración de la animación
       >
         <table className="tabla-U" style={{ width: "90%", margin: "0 auto" }}>
           <thead>
@@ -143,7 +153,7 @@ export const ListaDeUser = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </motion.div>
     </>
   );
 };
