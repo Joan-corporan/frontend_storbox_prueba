@@ -89,8 +89,8 @@ const Login = () => {
        exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
        transition={{ duration: 1.5 }} // Duración de la animación
          style={{
-          width: "40%",
-          height: "65vh",
+          width: "30%",
+          height: "30vh",
           margin: "0 auto",
           padding: "20px",
           boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",

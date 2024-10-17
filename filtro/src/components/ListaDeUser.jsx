@@ -126,7 +126,12 @@ export const ListaDeUser = () => {
           </thead>
           <tbody>
             {listtaUser.map((user) => (
-              <tr key={user.id}>
+              <motion.tr key={user.id} 
+              
+                  initial={{ y: -50, opacity: 0 }} // Comienza desde arriba y con opacidad 0
+                  animate={{ y: 0, opacity: 1 }} // Desciende a su posición original y la opacidad aumenta
+                  transition={{ duration: 1.5 }} // Duración de la animación
+              >
                 <td>{user.rut}</td>
                 <td>{user.nombre}</td>
                 <td>
@@ -149,7 +154,7 @@ export const ListaDeUser = () => {
                     />
                   </button>
                 </td>
-              </tr>
+              </motion.tr>
             ))}
           </tbody>
         </table>

@@ -4,6 +4,8 @@ import "./login.css"
 import Swal from 'sweetalert2'; 
 import { useNavigate } from 'react-router';
 import Navbar from './Navbar';
+import { motion } from 'framer-motion';
+
 
 const FormularioCliente = () => {
   const [cliente, setCliente] = useState({
@@ -163,7 +165,7 @@ const FormularioCliente = () => {
     <>
     <Navbar/>
    
-          <div className="modal-content-crear-cliente" style={{
+          <motion.div  className="modal-content-crear-cliente" style={{
             width: "40%",
             height:"65vh",
             margin: "0 auto",
@@ -173,7 +175,12 @@ const FormularioCliente = () => {
             backgroundColor: "#f2f2f2",
             marginTop: "50px",
             marginBottom: "50px",
-          }}>
+          }}
+          initial={{ x: '-100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+          animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+          exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+          transition={{ duration: 1 }} // Duración de la animación
+          >
           
         <h2 style={{ textAlign:"center"}}>Registrar nuevo cliente</h2>
            
@@ -282,7 +289,7 @@ const FormularioCliente = () => {
   </table>
 </form>
 
-          </div>
+          </motion.div>
        
     
     </>

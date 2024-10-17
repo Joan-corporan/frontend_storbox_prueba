@@ -3,12 +3,10 @@ import axios from "axios";
 import "./ClientesFiltrados.css"; // Estilos externos
 import "./estilosTableClienteFiltrados.css"; // Estilos externos
 
-
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
 import Navbar from "./Navbar";
-import { motion } from 'framer-motion';
-
+import { motion } from "framer-motion";
 
 const ClientesFiltrados = () => {
   const [loading, setLoading] = useState(false);
@@ -243,7 +241,7 @@ const ClientesFiltrados = () => {
   };
   // Función para generar el archivo Excel
   const exportarExcel = () => {
-    if(clientes.length===0){
+    if (clientes.length === 0) {
       Swal.fire({
         title: "��Error!",
         text: "No hay clientes para exportar a Excel.",
@@ -251,34 +249,33 @@ const ClientesFiltrados = () => {
         confirmButtonText: "Aceptar",
       });
       return;
-    }else{
-       const ws = XLSX.utils.json_to_sheet(clientes);
+    } else {
+      const ws = XLSX.utils.json_to_sheet(clientes);
 
-    // Formatear encabezados
-    const encabezados = Object.keys(clientes[0]);
-    XLSX.utils.sheet_add_aoa(ws, [encabezados], { origin: "A1" });
+      // Formatear encabezados
+      const encabezados = Object.keys(clientes[0]);
+      XLSX.utils.sheet_add_aoa(ws, [encabezados], { origin: "A1" });
 
-    // Ajuste automático de las columnas
-    const columnas = Object.keys(clientes[0]).map((key) => ({
-      wch: Math.max(
-        key.length,
-        ...clientes.map((c) => (c[key] ? c[key].toString().length : 0))
-      ),
-    }));
-    ws["!cols"] = columnas;
+      // Ajuste automático de las columnas
+      const columnas = Object.keys(clientes[0]).map((key) => ({
+        wch: Math.max(
+          key.length,
+          ...clientes.map((c) => (c[key] ? c[key].toString().length : 0))
+        ),
+      }));
+      ws["!cols"] = columnas;
 
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Clientes");
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Clientes");
 
-    // Estilo básico (opcional, más detalles en la documentación de XLSX)
-    ws["A1"].s = {
-      font: { bold: true },
-      alignment: { horizontal: "center" },
-    };
+      // Estilo básico (opcional, más detalles en la documentación de XLSX)
+      ws["A1"].s = {
+        font: { bold: true },
+        alignment: { horizontal: "center" },
+      };
 
-    XLSX.writeFile(wb, "clientes.xlsx");
+      XLSX.writeFile(wb, "clientes.xlsx");
     }
-   
   };
 
   const abrirModalEdicion = (cliente) => {
@@ -287,7 +284,6 @@ const ClientesFiltrados = () => {
     setMostrarModal(true); // Muestra el modal
   };
   const EliminarCliente = async (cliente) => {
-    
     try {
       const response = await axios.delete(
         `http://localhost:3000/api/clients/${cliente.rut_cliente}`,
@@ -297,33 +293,30 @@ const ClientesFiltrados = () => {
           },
         }
       );
-      console.log(response)
+      console.log(response);
       if (response.status === 200) {
         setClientes(
           clientes.filter((c) => c.rut_cliente !== cliente.rut_cliente)
         );
-    
       }
 
-     
-        Swal.fire({
-            title: "¡Éxito!",
-            text: `${response.data.message}`,
-            icon: "success",
-            confirmButtonText: "Aceptar",
-        });
-    
+      Swal.fire({
+        title: "¡Éxito!",
+        text: `${response.data.message}`,
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
     } catch (error) {
-      console.error('Error al eliminar el cliente', error);
+      console.error("Error al eliminar el cliente", error);
       Swal.fire({
         title: "¡Error!",
-        text: error.response?.data?.message || "No se pudo eliminar el cliente.",
+        text:
+          error.response?.data?.message || "No se pudo eliminar el cliente.",
         icon: "error",
         confirmButtonText: "Aceptar",
       });
     }
   };
-
 
   const cerrarModal = () => {
     setMostrarModal(false); // Oculta el modal
@@ -413,17 +406,20 @@ const ClientesFiltrados = () => {
       });
       setError("Hubo un problema al guardar los cambios.");
     }
-    
   };
 
   return (
     <>
       <Navbar />
       <motion.div
-        style={{ padding: "0", boxShadow: "1px 1px 2px black" , marginTop:"20px" }}
-        initial={{ x: '-100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+        style={{
+          padding: "0",
+          boxShadow: "1px 1px 2px black",
+          marginTop: "20px",
+        }}
+        initial={{ x: "-100%", opacity: 0 }} // Comienza fuera de la vista desde la izquierda
         animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
-        exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+        exit={{ x: "100%", opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
         transition={{ duration: 1.5 }} // Duración de la animación
         className="clientes-filtrados-container"
       >
@@ -446,7 +442,6 @@ const ClientesFiltrados = () => {
                   <tr>
                     <td>
                       <select
-                       
                         id="id_sucursal"
                         name="id_sucursal"
                         value={filters.id_sucursal}
@@ -459,7 +454,6 @@ const ClientesFiltrados = () => {
                         <option value="2">Sucursal 2</option>
                         <option value="3">Sucursal 3</option>
                       </select>
-                
                     </td>
                     <td>
                       <input
@@ -470,7 +464,6 @@ const ClientesFiltrados = () => {
                         onChange={handleChange}
                         placeholder="Nombre del cliente"
                       />
-                
                     </td>
                     <td>
                       <input
@@ -481,7 +474,6 @@ const ClientesFiltrados = () => {
                         onChange={handleChange}
                         placeholder="RUT del cliente"
                       />
-                  
                     </td>
                     <td>
                       <input
@@ -492,8 +484,6 @@ const ClientesFiltrados = () => {
                         onChange={handleChange}
                         placeholder="Teléfono del cliente"
                       />
-                   
-               
                     </td>
                     <td>
                       <input
@@ -504,7 +494,6 @@ const ClientesFiltrados = () => {
                         onChange={handleChange}
                         placeholder="ejemplo.123@gmail.com"
                       />
-               
                     </td>
                     <td>
                       <input
@@ -514,7 +503,6 @@ const ClientesFiltrados = () => {
                         value={filters.fecha_desde}
                         onChange={handleChange}
                       />
-                  
                     </td>
                     <td>
                       <input
@@ -544,7 +532,11 @@ const ClientesFiltrados = () => {
                 type="button"
                 className="rojo"
                 onClick={() => limpiarfiltros()}
-                style={{ marginTop: "10px", marginLeft: "10px", backgroundColor:"#333" }}
+                style={{
+                  marginTop: "10px",
+                  marginLeft: "10px",
+                  backgroundColor: "#333",
+                }}
               >
                 Limpiar Filtros
               </button>
@@ -556,185 +548,187 @@ const ClientesFiltrados = () => {
         {error && <p className="error">{error}</p>}
       </motion.div>
 
-      <motion.div  className="clientes-grid" style={{width:"90%"}}  initial={{ x: '-100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
-      animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
-      exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
-      transition={{ duration: 2 }} // Duración de la animación
+      <motion.div
+        className="clientes-grid"
+        style={{ width: "90%" }}
+        initial={{ x: "-100%", opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+        animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+        exit={{ x: "100%", opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+        transition={{ duration: 2 }} // Duración de la animación
       >
-        
-          <div className="contenedor_botones">
-            <button className="rojo botton" onClick={() => limpiarGrilla()}>
-              Limpiar grilla
-            </button>
-            <button className="Naranja botton" onClick={exportarExcel}>
-              Generar Planilla
-            </button>
-          </div>
-       
-       
-          <div
+        <div className="contenedor_botones">
+          <button className="rojo botton" onClick={() => limpiarGrilla()}>
+            Limpiar grilla
+          </button>
+          <button className="Naranja botton" onClick={exportarExcel}>
+            Generar Planilla
+          </button>
+        </div>
+
+        <div
+          style={{
+            overflowY: "auto",
+            marginBottom: "30px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <table
+            className="table-filter"
             style={{
-              overflowY: "auto",
-              marginBottom: "30px",
-              display: "flex",
-              justifyContent: "center",
+              textAlign: "center",
+              width: "90%",
+              borderCollapse: "collapse",
             }}
           >
-            <table
-              className="table-filter"
-              style={{
-                textAlign: "center",
-                width: "90%",
-                borderCollapse: "collapse",
-              }}
-            >
-              <thead style={{}}>
-                <tr>
-                  <th
-                    style={{
-                     
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 1,
-                    }}
-                  >
-                    Sucursal
-                  </th>
-                  <th
-                    style={{
-                      
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 1,
-                    }}
-                  >
-                    Nombre
-                  </th>
-                  <th
-                    style={{
-                     
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 1,
-                    }}
-                  >
-                    Email
-                  </th>
-                  <th
-                    style={{
-                     
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 1,
-                    }}
-                  >
-                    Teléfono
-                  </th>
-                  <th
-                    style={{
-                      
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 1,
-                    }}
-                  >
-                    RUT
-                  </th>
-                  <th
-                    style={{
-                    
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 1,
-                    }}
-                  >
-                    Fecha Registro
-                  </th>
-                  <th
-                    style={{
-                      
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 1,
-                    }}
-                  >
-                    Opciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {clientes.map((cliente) => (
-                  <tr key={cliente.rut_cliente}>
-                    <td>{cliente.id_sucursal}</td>
-                    <td>{cliente.nombre_cliente}</td>
-                    <td>{cliente.email_cliente}</td>
-                    <td>{cliente.telefono_cliente}</td>
-                    <td>{cliente.rut_cliente}</td>
-                    <td>
-                      {new Date(cliente.fecha_registro)
-                        .toISOString()
-                        .split("T")[0]
-                        .split("-")
-                        .reverse()
-                        .join("-")}
-                    </td>
-                    <td>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          /* height: "100%", */
-                        }}
+            <thead style={{}}>
+              <tr>
+                <th
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  Sucursal
+                </th>
+                <th
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  Nombre
+                </th>
+                <th
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  Email
+                </th>
+                <th
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  Teléfono
+                </th>
+                <th
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  RUT
+                </th>
+                <th
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  Fecha Registro
+                </th>
+                <th
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  Opciones
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {clientes.map((cliente) => (
+                <motion.tr
+                  key={cliente.rut_cliente}
+                  initial={{ y: -50, opacity: 0 }} // Comienza desde arriba y con opacidad 0
+                  animate={{ y: 0, opacity: 1 }} // Desciende a su posición original y la opacidad aumenta
+                  transition={{ duration: 1 }} // Duración de la animación
+                >
+                  <td>{cliente.id_sucursal}</td>
+                  <td>{cliente.nombre_cliente}</td>
+                  <td>{cliente.email_cliente}</td>
+                  <td>{cliente.telefono_cliente}</td>
+                  <td>{cliente.rut_cliente}</td>
+                  <td>
+                    {new Date(cliente.fecha_registro)
+                      .toISOString()
+                      .split("T")[0]
+                      .split("-")
+                      .reverse()
+                      .join("-")}
+                  </td>
+                  <td>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <button
+                        style={{ backgroundColor: "#15616D" }}
+                        onClick={() => abrirModalEdicion(cliente)}
                       >
-                        <button
-                        style={{backgroundColor:"#15616D"}}
-                          /* className="boton-eliminar" */
-                          onClick={() => abrirModalEdicion(cliente)}
-                        >
-                          <img
-                            style={{ width: "15px" }}
-                            src="public/pencil.svg"
-                            alt="icon"
-                          />
-                        </button>
-                        <button
-                          style={{ marginLeft: "5px" }}
-                          className="boton-eliminar"
-                          onClick={() => EliminarCliente(cliente)}
-                        >
-                          <img
-                            style={{ width: "15px" }}
-                            src="public/delete.svg"
-                            alt="icon"
-                          />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-    
+                        <img
+                          style={{ width: "15px" }}
+                          src="public/pencil.svg"
+                          alt="icon"
+                        />
+                      </button>
+                      <button
+                        style={{ marginLeft: "5px" }}
+                        className="boton-eliminar"
+                        onClick={() => EliminarCliente(cliente)}
+                      >
+                        <img
+                          style={{ width: "15px" }}
+                          src="public/delete.svg"
+                          alt="icon"
+                        />
+                      </button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </motion.div>
 
       {/* Modal para editar cliente */}
       {mostrarModal && (
-        <motion.div className="modal" initial={{ x: '+100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
-        animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
-        exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
-        transition={{ duration: 0.5 }} // Duración de la animación
+        <motion.div
+          className="modal"
+          initial={{ x: "+100%", opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+          animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+          exit={{ x: "100%", opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+          transition={{ duration: 0.5 }} // Duración de la animación
         >
-          <div style={{backgroundColor:"#F4F4F4"}} className="modal-content">
-            <span style={{fontSize:"20px", cursor:"pointer"}} className="close" onClick={cerrarModal}>
+          <div style={{ backgroundColor: "#F4F4F4" }} className="modal-content">
+            <span
+              style={{ fontSize: "20px", cursor: "pointer" }}
+              className="close"
+              onClick={cerrarModal}
+            >
               &times;
             </span>
             <h4 style={{ margin: "5px", textAlign: "center" }}>
               Actualizar Cliente
             </h4>
-            <form style={{display:"flex",justifyContent:"center"}}>
+            <form style={{ display: "flex", justifyContent: "center" }}>
               <table className="form-table">
                 <tbody>
                   <tr>
@@ -828,16 +822,16 @@ const ClientesFiltrados = () => {
                       )}
                     </td>
                   </tr>
-                  <tr  >
-                    <td  colSpan="2" className="button-row">
-                    </td>
-                      <button style={{backgroundColor:"#15616D"}}
-                        type="button"
-                        className="btn-guardar"
-                        onClick={guardarCliente}
-                      >
-                        Guardar
-                      </button>
+                  <tr>
+                    <td colSpan="2" className="button-row"></td>
+                    <button
+                      style={{ backgroundColor: "#15616D" }}
+                      type="button"
+                      className="btn-guardar"
+                      onClick={guardarCliente}
+                    >
+                      Guardar
+                    </button>
                   </tr>
                 </tbody>
               </table>
