@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fdograph/rut-utilities": "^1.4.0",
     "axios": "^1.7.7",
     "filtro": "file:",
     "framer-motion": "^11.11.9",

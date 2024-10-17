@@ -76,7 +76,7 @@ const ClientesFiltrados = () => {
       fecha_hasta: "",
       rut_cliente: "",
     });
-    setErrores("");
+    /* setErrores(""); */
   };
   const limpiarGrilla = () => {
     setClientes([]);
@@ -224,7 +224,7 @@ const ClientesFiltrados = () => {
         }
       );
       setClientes(data.detail);
-      setErrores("");
+      /* setErrores(""); */
     } catch (err) {
       /* setError("Error al obtener los datos de clientes."); */
       Swal.fire({
@@ -710,14 +710,16 @@ const ClientesFiltrados = () => {
 
       {/* Modal para editar cliente */}
       {mostrarModal && (
-        <motion.div
+        <div
           className="modal"
-          initial={{ x: "+100%", opacity: 0 }} // Comienza fuera de la vista desde la izquierda
-          animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
-          exit={{ x: "100%", opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
-          transition={{ duration: 0.5 }} // Duración de la animación
+        
         >
-          <div style={{ backgroundColor: "#F4F4F4" }} className="modal-content">
+          <motion.div style={{ backgroundColor: "#F4F4F4" }} className="modal-content"
+            initial={{ x: "+100%", opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+            animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+            exit={{ x: "100%", opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+            transition={{ duration: 0.5 }} // Duración de la animación
+          >
             <span
               style={{ fontSize: "20px", cursor: "pointer" }}
               className="close"
@@ -836,8 +838,8 @@ const ClientesFiltrados = () => {
                 </tbody>
               </table>
             </form>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       )}
     </>
   );
