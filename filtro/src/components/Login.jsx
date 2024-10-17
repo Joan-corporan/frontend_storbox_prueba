@@ -5,6 +5,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import NavbarLogin from "./NavbarLogin";
+import { motion } from 'framer-motion';
+
 
 const Login = () => {
   const [loginUser, setloginUser] = useState({
@@ -81,7 +83,11 @@ const Login = () => {
   return (
     <>
       <NavbarLogin />
-      <div
+      <motion.div
+       initial={{ x: '-100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+       animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+       exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+       transition={{ duration: 1.5 }} // Duración de la animación
          style={{
           width: "40%",
           height: "65vh",
@@ -165,7 +171,7 @@ const Login = () => {
             </tr>
           </tbody>
         </table>
-      </div>
+      </motion.div>
     </>
   );
 };

@@ -3,10 +3,12 @@ import axios from "axios";
 import "./ClientesFiltrados.css"; // Estilos externos
 import "./estilosTableClienteFiltrados.css"; // Estilos externos
 
-import FormularioCliente from "./FormularioCliente";
+
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
 import Navbar from "./Navbar";
+import { motion } from 'framer-motion';
+
 
 const ClientesFiltrados = () => {
   const [loading, setLoading] = useState(false);
@@ -417,8 +419,12 @@ const ClientesFiltrados = () => {
   return (
     <>
       <Navbar />
-      <div
+      <motion.div
         style={{ padding: "0", boxShadow: "1px 1px 2px black" , marginTop:"20px" }}
+        initial={{ x: '-100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+        animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+        exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+        transition={{ duration: 1.5 }} // Duración de la animación
         className="clientes-filtrados-container"
       >
         <div className="rowContainer">
@@ -548,9 +554,13 @@ const ClientesFiltrados = () => {
 
         {loading && <p>Cargando...</p>}
         {error && <p className="error">{error}</p>}
-      </div>
+      </motion.div>
 
-      <div className="clientes-grid" style={{width:"90%"}}>
+      <motion.div  className="clientes-grid" style={{width:"90%"}}  initial={{ x: '-100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+      animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+      exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+      transition={{ duration: 2 }} // Duración de la animación
+      >
         
           <div className="contenedor_botones">
             <button className="rojo botton" onClick={() => limpiarGrilla()}>
@@ -561,7 +571,7 @@ const ClientesFiltrados = () => {
             </button>
           </div>
        
-       {/*  {clientes.length > 0 ? ( */}
+       
           <div
             style={{
               overflowY: "auto",
@@ -572,7 +582,7 @@ const ClientesFiltrados = () => {
           >
             <table
               className="table-filter"
-              /* id="table-height" */ style={{
+              style={{
                 textAlign: "center",
                 width: "90%",
                 borderCollapse: "collapse",
@@ -582,7 +592,7 @@ const ClientesFiltrados = () => {
                 <tr>
                   <th
                     style={{
-                      /*  backgroundColor: "#333", */
+                     
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -592,7 +602,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      /* backgroundColor: "#333", */
+                      
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -602,7 +612,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      /* backgroundColor: "#333", */
+                     
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -612,7 +622,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      /* backgroundColor: "#333", */
+                     
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -622,7 +632,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      /* backgroundColor: "#333", */
+                      
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -632,7 +642,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      /* backgroundColor: "#333", */
+                    
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -642,7 +652,7 @@ const ClientesFiltrados = () => {
                   </th>
                   <th
                     style={{
-                      /* backgroundColor: "#333", */
+                      
                       position: "sticky",
                       top: 0,
                       zIndex: 1,
@@ -708,11 +718,15 @@ const ClientesFiltrados = () => {
             </table>
           </div>
     
-      </div>
+      </motion.div>
 
       {/* Modal para editar cliente */}
       {mostrarModal && (
-        <div className="modal">
+        <motion.div className="modal" initial={{ x: '+100%', opacity: 0 }} // Comienza fuera de la vista desde la izquierda
+        animate={{ x: 0, opacity: 1 }} // Se desplaza a su posición original
+        exit={{ x: '100%', opacity: 0 }} // Se mueve fuera de la vista hacia la derecha al salir
+        transition={{ duration: 0.5 }} // Duración de la animación
+        >
           <div style={{backgroundColor:"#F4F4F4"}} className="modal-content">
             <span style={{fontSize:"20px", cursor:"pointer"}} className="close" onClick={cerrarModal}>
               &times;
@@ -829,7 +843,7 @@ const ClientesFiltrados = () => {
               </table>
             </form>
           </div>
-        </div>
+        </motion.div>
       )}
     </>
   );
