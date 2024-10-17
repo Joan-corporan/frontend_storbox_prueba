@@ -192,7 +192,8 @@ const FormularioCliente = () => {
             onChange={handleChange}
             placeholder="Selecciona una sucursal"
           >
-            <option disabled value="">
+            
+            <option style={{color:"gray"}} disabled value="">
               Selecciona una sucursal
             </option>
             <option value="1">Sucursal 1</option>
@@ -201,6 +202,7 @@ const FormularioCliente = () => {
           </select>
         
         </td>
+        
       </tr>
 
       <tr>
@@ -247,9 +249,7 @@ const FormularioCliente = () => {
             onChange={handleChange}
             placeholder="+56912345678"
           />
-        {/*   {errores.telefono_cliente && (
-            <span className="error">{errores.telefono_cliente}</span>
-          )} */}
+      
         </td>
       </tr>
 

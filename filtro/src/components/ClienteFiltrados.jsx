@@ -285,7 +285,7 @@ const ClientesFiltrados = () => {
     setMostrarModal(true); // Muestra el modal
   };
   const EliminarCliente = async (cliente) => {
-    /* setClienteEliminar(cliente); */
+    
     try {
       const response = await axios.delete(
         `http://localhost:3000/api/clients/${cliente.rut_cliente}`,
@@ -295,20 +295,31 @@ const ClientesFiltrados = () => {
           },
         }
       );
+      console.log(response)
       if (response.status === 200) {
         setClientes(
           clientes.filter((c) => c.rut_cliente !== cliente.rut_cliente)
         );
-        setClienteEliminar(null);
+    
       }
 
+     
+        Swal.fire({
+            title: "¡Éxito!",
+            text: `${response.data.message}`,
+            icon: "success",
+            confirmButtonText: "Aceptar",
+        });
+    
+    } catch (error) {
+      console.error('Error al eliminar el cliente', error);
       Swal.fire({
-        title: "¡Éxito!",
-        text: `${response.data.message}`,
-        icon: "success",
+        title: "¡Error!",
+        text: error.response?.data?.message || "No se pudo eliminar el cliente.",
+        icon: "error",
         confirmButtonText: "Aceptar",
       });
-    } catch (error) {}
+    }
   };
 
 
@@ -696,15 +707,13 @@ const ClientesFiltrados = () => {
               </tbody>
             </table>
           </div>
-      {/*   ) : (
-          <p></p>
-        )} */}
+    
       </div>
 
       {/* Modal para editar cliente */}
       {mostrarModal && (
         <div className="modal">
-          <div style={{backgroundColor:"#FFECD1"}} className="modal-content">
+          <div style={{backgroundColor:"#F4F4F4"}} className="modal-content">
             <span style={{fontSize:"20px", cursor:"pointer"}} className="close" onClick={cerrarModal}>
               &times;
             </span>

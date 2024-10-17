@@ -148,7 +148,7 @@ const Register = () => {
         backgroundColor: "#f2f2f2",
         marginTop: "50px",
         marginBottom: "50px",
-      }} /* className="container" */>
+      }}>
         <h2>Registrar Personal</h2>
         <form onSubmit={handleSubmit} style={{
           display: "flex",

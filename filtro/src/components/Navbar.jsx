@@ -49,6 +49,7 @@ const Navbar = () => {
       }}
       className="navbar"
     >
+      
       <div className="userbotonHamburguesa">
        
         <div className="navbar-options">
@@ -65,27 +66,31 @@ const Navbar = () => {
             animate={menuOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: "-100%" }} // Animación según el estado
             transition={{ duration: 0.5, ease: "easeInOut" }} >
               <button onClick={btnInicio} className="register-button">
-                Inicio
+                <span className="keyf">Inicio</span>
+                
               </button>
               <button onClick={btnRegistrarCliente} className="register-button">
-                Registrar Cliente
+                <span className="keyf">Registrar Cliente</span>
+                
               </button>
               <button onClick={btnRegistrarPersonal} className="register-button">
-                Registrar Personal
+                <span className="keyf"> Registrar Personal</span>
+               
               </button>
+              
               <button onClick={btnListaUsers} className="register-button">
-                Lista de Usuarios
+                <span className="animate:bonce">Lista de Usuarios</span>
+                
               </button>
-              <button onClick={handleLogout} className="register-button">
-                Cerrar Sesion
-              </button>
+             
             </motion.div>
           )}
        
         </div>
       </div>
-      <div /* style={{ marginLeft: "20px" }} */ className="navbar-title">
-        Gestor de Clientes
+      <div  className="navbar-title">
+        <span>Gestor de Clientes</span>
+        
       </div>
   <h4>
           <span
@@ -97,6 +102,11 @@ const Navbar = () => {
           >
             {nombreUserLogiado}
             <img style={{marginLeft:"10px"}} src="public/user.svg" alt="" />
+            <button style={{marginLeft:"30px", backgroundColor:"#15616D" }}  onClick={handleLogout} >
+                
+            <img  src="public/logout.svg" alt="" />
+              </button>
+
           </span>
         </h4>
       
