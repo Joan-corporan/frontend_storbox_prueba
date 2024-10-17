@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router';
 import Navbar from './Navbar';
 
-const FormularioCliente = ({ cerralModalRegistroCliente }) => {
+const FormularioCliente = () => {
   const [cliente, setCliente] = useState({
     id_sucursal: '',
     nombre_cliente: '',
@@ -41,12 +41,7 @@ const FormularioCliente = ({ cerralModalRegistroCliente }) => {
 ;
     return regex.test(rut.trim());
   };
- /*  const cerrarModalRegistro=()=>{
-    setCerrarModal(cerrarModal)
-    console.log(modalCerrado)
-    console.log(cerrarModal);
-    
-  } */
+ 
   
   const handleChange = (e) => {
     setCliente({
@@ -58,33 +53,72 @@ const FormularioCliente = ({ cerralModalRegistroCliente }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (
+      cliente.id_sucursal.trim().length === 0 || 
+      cliente.nombre_cliente.trim().length === 0 || 
+      cliente.email_cliente.trim().length === 0 || 
+      cliente.telefono_cliente.trim().length === 0 || 
+      cliente.rut_cliente.trim().length === 0
+    ) {
+      return Swal.fire({
+        title: "¡Error!",
+        text: "Todos los campos son obligatorios",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
     
-    /* console.log(cerrarModal) */
-    const nuevoErrores = {};
+    
+    
     if (!validarSucursal(cliente.id_sucursal)) {
-      nuevoErrores.id_sucursal = 'Sucursal inválido. Solo tipo número';
+      return Swal.fire({
+        title: "¡Error!",
+        text:'Sucursal inválido. Solo tipo número',
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    
     }
     if(!validarNombre(cliente.nombre_cliente)){
-      nuevoErrores.nombre_cliente = 'Nombre inválido. Solo tipo texto';
+      return Swal.fire({
+        title: "¡Error!",
+        text:'Nombre inválido. Solo tipo texto',
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+   
     }
   
     
     if (!validarEmail(cliente.email_cliente)) {
-      nuevoErrores.email_cliente = 'Email inválido. Debe ser formato email';
+      return Swal.fire({
+        title: "¡Error!",
+        text:'Email inválido. Debe ser formato email',
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      
     }
     if (!validarTelefono(cliente.telefono_cliente)) {
-      nuevoErrores.telefono_cliente = 'Teléfono inválido. Debe tener 9 dígitos';
+      return Swal.fire({
+        title: "¡Error!",
+        text:'Teléfono inválido. Debe tener 9 dígitos',
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    
     }
     if (!validarRut(cliente.rut_cliente)) {
-      nuevoErrores.rut_cliente = 'RUT inválido. Debe ser formato rut';
+      return Swal.fire({
+        title: "¡Error!",
+        text:'RUT inválido. Debe ser formato rut',
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      
     }
 
-    if (Object.keys(nuevoErrores).length > 0) {
-      setErrores(nuevoErrores);
-      console.log(nuevoErrores)
-      console.log(errores.id_sucursal)
-    } else {
-      setErrores({});
+   
       const token = localStorage.getItem('token');
       try {
         const response = await axios.post('http://localhost:3000/api/clients/create',cliente,  {
@@ -122,7 +156,7 @@ const FormularioCliente = ({ cerralModalRegistroCliente }) => {
         }
     
       }
-    }
+    
   };
 
   return (
@@ -165,9 +199,7 @@ const FormularioCliente = ({ cerralModalRegistroCliente }) => {
             <option value="2">Sucursal 2</option>
             <option value="3">Sucursal 3</option>
           </select>
-         {/*  {errores.id_sucursal && (
-            <span className="error">{errores.id_sucursal}</span>
-          )} */}
+        
         </td>
       </tr>
 
@@ -183,9 +215,7 @@ const FormularioCliente = ({ cerralModalRegistroCliente }) => {
             onChange={handleChange}
             placeholder="Nombre y Apellido"
           />
-          {/* {errores.nombre_cliente && (
-            <span className="error">{errores.nombre_cliente}</span>
-          )} */}
+        
         </td>
       </tr>
 
@@ -201,9 +231,7 @@ const FormularioCliente = ({ cerralModalRegistroCliente }) => {
             onChange={handleChange}
             placeholder="ejemplo@gmail.com"
           />
-          {/* {errores.email_cliente && (
-            <span className="error">{errores.email_cliente}</span>
-          )} */}
+         
         </td>
       </tr>
 
