@@ -4,6 +4,7 @@ import "./login.css"; // Asegúrate de importar el archivo CSS
 import axios from "axios";
 import Swal from "sweetalert2";
 import { motion } from 'framer-motion';
+import {validateRut, formatRut} from "@fdograph/rut-utilities"
 
 import Navbar from "./Navbar";
 
@@ -24,10 +25,10 @@ const Register = () => {
       [name]: value,
     });
   };
-  const validarRut = (rut) => {
+  /* const validarRut = (rut) => {
     const regex = /^[0-9]{7,8}-[0-9Kk]{1}$/;
     return regex.test(rut);
-  };
+  }; */
   const validarContraseña = (password) => {
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
     return regex.test(password);
@@ -40,7 +41,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-    const nuevoErrores = {};
+  
     if (
       userR.rut === "" ||
       userR.password === "" ||
@@ -63,7 +64,7 @@ const Register = () => {
       
       
     }
-    if (!validarRut(userR.rut)) {
+    if (!validateRut(formatRut(userR.rut))) {
       return Swal.fire({
         title: "¡Error!",
         text:"El rut ingresado no es válido"   ,

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import NavbarLogin from "./NavbarLogin";
 import { motion } from 'framer-motion';
+import { formatRut, validateRut } from "@fdograph/rut-utilities";
 
 
 const Login = () => {
@@ -20,12 +21,18 @@ const Login = () => {
       [name]: value,
     });
   };
+  console.log(".........................................")
+
+
+console.log("Rut validado para poder iniciar sesion:54735492-3 ")
+console.log(validateRut(formatRut("54735492-3")))
+console.log("Contraseña: Joan123")
+
+
+console.log(".........................................")
   const [errorMensaje, seterrorMensaje] = useState({});
   const navigate = useNavigate();
-  const validarRut = (rut) => {
-    const regex = /^[0-9]{7,8}-[0-9Kk]{1}$/; // Formato básico de RUT
-    return regex.test(rut.trim());
-  };
+
   const validarPassword = (password) => {
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/; // Formato básico de contraseña
     return regex.test(password.trim());
@@ -44,8 +51,14 @@ const Login = () => {
     if (!validarPassword(loginUser.password)) {
       nuevoError.password = "El formato de la contraseña no es válido";
     }
-    if (!validarRut(loginUser.rut)) {
-      nuevoError.password = "El formato del Rut no es válido";
+    if (!validateRut(formatRut(loginUser.rut))) {
+      return  Swal.fire({
+        title: "¡Error!",
+        text: "El formato del Rut no es válido" ,
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      
     }
     try {
       if (Object.keys(nuevoError).length > 0) {
@@ -123,11 +136,7 @@ const Login = () => {
                             value={loginUser.rut}
                             placeholder="12345678-2"
                           />
-                          {errorMensaje.rut && (
-                            <span style={{ color: "red", fontSize: "12px" }}>
-                              {errorMensaje.rut}
-                            </span>
-                          )}
+                         
                         </td>
                       </tr>
                       <tr>
@@ -143,11 +152,7 @@ const Login = () => {
                             value={loginUser.password}
                             placeholder="Ejemplo123"
                           />
-                          {errorMensaje.password && (
-                            <span style={{ color: "red", fontSize: "12px" }}>
-                              {errorMensaje.password}
-                            </span>
-                          )}
+                         
                         </td>
                       </tr>
                       <tr>

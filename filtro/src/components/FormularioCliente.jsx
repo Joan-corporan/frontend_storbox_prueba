@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router';
 import Navbar from './Navbar';
 import { motion } from 'framer-motion';
+import { formatRut, validateRut } from '@fdograph/rut-utilities';
 
 
 const FormularioCliente = () => {
@@ -38,11 +39,11 @@ const FormularioCliente = () => {
     return regex.test(telefono);
   };
   
-  const validarRut = (rut) => {
+ /*  const validarRut = (rut) => {
     const regex = /^[0-9]{7,8}-[0-9]{1}$/
 ;
     return regex.test(rut.trim());
-  };
+  }; */
  
   
   const handleChange = (e) => {
@@ -110,7 +111,7 @@ const FormularioCliente = () => {
       });
     
     }
-    if (!validarRut(cliente.rut_cliente)) {
+    if (!validateRut(formatRut(cliente.rut_cliente))) {
       return Swal.fire({
         title: "¡Error!",
         text:'RUT inválido. Debe ser formato rut',

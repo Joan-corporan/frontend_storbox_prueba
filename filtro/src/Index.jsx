@@ -1,7 +1,6 @@
 
 import './App.css';
 import ClientesFiltrados from './components/ClienteFiltrados';
-import Error from './components/Error';
 import Home from './components/Home';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import IniciarSesion from './components/IniciarSesion';

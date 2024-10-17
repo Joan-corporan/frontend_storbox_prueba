@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import "./estilosNavbar.css";
 import { useNavigate } from "react-router";
+import {validateRut, formatRut} from "@fdograph/rut-utilities"
 
 const Navbar = () => {
   const navegate = useNavigate();
@@ -15,6 +16,18 @@ const Navbar = () => {
     localStorage.removeItem("userName");
     navegate("/login");
   };
+
+
+console.log(".........................................")
+
+
+console.log("Rut validado para poder iniciar sesion:54735492-3 ")
+console.log(validateRut(formatRut("54735492-3")))
+console.log("Contraseña: Joan123")
+
+
+console.log(".........................................")
+
 
   const btnRegistrarPersonal = () => {
     navegate("/register");

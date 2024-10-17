@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
 import Navbar from "./Navbar";
 import { motion } from "framer-motion";
+import { validateRut,formatRut } from "@fdograph/rut-utilities";
 
 const ClientesFiltrados = () => {
   const [loading, setLoading] = useState(false);
@@ -15,9 +16,7 @@ const ClientesFiltrados = () => {
   const [clientes, setClientes] = useState([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null); // Almacena el cliente seleccionado para editar
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [modalRegitroCliente, setMostrarModalRegistro] = useState(false);
 
-  const [setClienteEliminar] = useState(null);
   const [filters, setFilters] = useState({
     id_sucursal: "",
     nombre_cliente: "",
@@ -29,7 +28,7 @@ const ClientesFiltrados = () => {
   });
 
   // Validaciones
-  const [errores, setErrores] = useState({});
+ /*  const [errores, setErrores] = useState({}); */
 
   const [errorEditar, seterrorEditar] = useState({}); ///////////////////////////////////////////////////
 
@@ -41,10 +40,10 @@ const ClientesFiltrados = () => {
     const regex = /^[a-zA-Zñ��áéíóúÁÉÍÓ��\s]+$/;
     return regex.test(nombre);
   };
-  const validarRut = (rut) => {
+/*   const validarRut = (rut) => {
     const regex = /^[0-9]{7,8}-[0-9Kk]{1}$/;
     return regex.test(rut);
-  };
+  }; */
   const validarSucursal = (sucursal) => {
     const regex = /^[0-9]+$/;
     return regex.test(sucursal);
@@ -175,10 +174,10 @@ const ClientesFiltrados = () => {
       setLoading(false);
       return;
     }
-    if (filters.rut_cliente && !validarRut(filters.rut_cliente)) {
+    if (filters.rut_cliente&&!validateRut(formatRut(filters.rut_cliente))) {
       Swal.fire({
         title: "¡Error!",
-        text: "RUT inválido. Debe ser formato rut",
+        text: "RUT inválido. Debe ser formato Rut",
         icon: "error",
         confirmButtonText: "Aceptar",
       });
@@ -336,32 +335,62 @@ const ClientesFiltrados = () => {
       clienteSeleccionado.email_cliente &&
       !validarEmail(clienteSeleccionado.email_cliente)
     ) {
-      errorealEditar.email_cliente = "Email inválido. Debe ser formato email";
+      return  Swal.fire({
+        title: "¡Error!",
+        text: "Email inválido. Debe ser formato email",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      
     }
     if (
       clienteSeleccionado.telefono_cliente &&
       !validarTelefono(clienteSeleccionado.telefono_cliente)
     ) {
-      errorealEditar.telefono_cliente =
-        "Teléfono inválido. Debe tener 9 dígitos";
+      return  Swal.fire({
+        title: "¡Error!",
+        text: "Teléfono inválido. Debe tener 9 dígitos",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      
+        
     }
     if (
       clienteSeleccionado.rut_cliente &&
-      !validarRut(clienteSeleccionado.rut_cliente)
+      !validateRut(formatRut(clienteSeleccionado.rut_cliente))
     ) {
-      errorealEditar.rut_cliente = "RUT inválido. Debe ser formato rut";
+      return  Swal.fire({
+        title: "¡Error!",
+        text: "RUT inválido. Debe ser formato rut",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+     
     }
     if (
       clienteSeleccionado.nombre_cliente &&
       !validarNombre(clienteSeleccionado.nombre_cliente)
     ) {
-      errorealEditar.nombre_cliente = "Nombre inválido. Solo tipo texto";
+      return  Swal.fire({
+        title: "¡Error!",
+        text: "Nombre inválido. Solo tipo texto",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+     
     }
     if (
       clienteSeleccionado.id_sucursal &&
       !validarSucursal(clienteSeleccionado.id_sucursal)
     ) {
-      errorealEditar.id_sucursal = "Sucursal inválido. Solo tipo número";
+      return  Swal.fire({
+        title: "¡Error!",
+        text: "Sucursal inválido. Solo tipo número",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+     
     }
     if (Object.keys(errorealEditar).length > 0) {
       seterrorEditar(errorealEditar);
@@ -386,7 +415,7 @@ const ClientesFiltrados = () => {
             ? clienteSeleccionado
             : cliente
         );
-        seterrorEditar({});
+        
         setClientes(nuevosClientes);
         cerrarModal(); // Cierra el modal después de guardar los cambios
         Swal.fire({
@@ -404,7 +433,7 @@ const ClientesFiltrados = () => {
         icon: "error",
         confirmButtonText: "Aceptar",
       });
-      setError("Hubo un problema al guardar los cambios.");
+    
     }
   };
 
@@ -745,11 +774,8 @@ const ClientesFiltrados = () => {
                         value={clienteSeleccionado.nombre_cliente}
                         onChange={manejarEdicion}
                       />
-                      {errorEditar.nombre_cliente && (
-                        <span className="error">
-                          {errorEditar.nombre_cliente}
-                        </span>
-                      )}
+                     
+                
                     </td>
                   </tr>
                   <tr>
@@ -764,11 +790,7 @@ const ClientesFiltrados = () => {
                         value={clienteSeleccionado.email_cliente}
                         onChange={manejarEdicion}
                       />
-                      {errorEditar.email_cliente && (
-                        <span className="error">
-                          {errorEditar.email_cliente}
-                        </span>
-                      )}
+                     
                     </td>
                   </tr>
                   <tr>
