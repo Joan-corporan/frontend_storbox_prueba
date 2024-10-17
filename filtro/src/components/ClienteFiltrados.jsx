@@ -241,7 +241,16 @@ const ClientesFiltrados = () => {
   };
   // Función para generar el archivo Excel
   const exportarExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(clientes);
+    if(clientes.length===0){
+      Swal.fire({
+        title: "��Error!",
+        text: "No hay clientes para exportar a Excel.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }else{
+       const ws = XLSX.utils.json_to_sheet(clientes);
 
     // Formatear encabezados
     const encabezados = Object.keys(clientes[0]);
@@ -266,6 +275,8 @@ const ClientesFiltrados = () => {
     };
 
     XLSX.writeFile(wb, "clientes.xlsx");
+    }
+   
   };
 
   const abrirModalEdicion = (cliente) => {
@@ -299,12 +310,7 @@ const ClientesFiltrados = () => {
       });
     } catch (error) {}
   };
-  /*  const abrirModalRegistroCliente = () => {
-    setMostrarModalRegistro(true);
-  };
-  const cerralModalRegistroCliente = () => {
-    setMostrarModalRegistro(false);
-  }; */
+
 
   const cerrarModal = () => {
     setMostrarModal(false); // Oculta el modal
@@ -394,16 +400,14 @@ const ClientesFiltrados = () => {
       });
       setError("Hubo un problema al guardar los cambios.");
     }
-    try {
-      /*  const response = await axios.delete() */
-    } catch (error) {}
+    
   };
 
   return (
     <>
       <Navbar />
       <div
-        style={{ padding: "0", boxShadow: "1px 1px 2px black" }}
+        style={{ padding: "0", boxShadow: "1px 1px 2px black" , marginTop:"20px" }}
         className="clientes-filtrados-container"
       >
         <div className="rowContainer">
@@ -425,7 +429,7 @@ const ClientesFiltrados = () => {
                   <tr>
                     <td>
                       <select
-                        /* style={{padding:"10px"}} */
+                       
                         id="id_sucursal"
                         name="id_sucursal"
                         value={filters.id_sucursal}
@@ -438,11 +442,7 @@ const ClientesFiltrados = () => {
                         <option value="2">Sucursal 2</option>
                         <option value="3">Sucursal 3</option>
                       </select>
-                      {/*   {errores.id_sucursal && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    {errores.id_sucursal}
-                  </span>
-                )} */}
+                
                     </td>
                     <td>
                       <input
@@ -453,11 +453,7 @@ const ClientesFiltrados = () => {
                         onChange={handleChange}
                         placeholder="Nombre del cliente"
                       />
-                      {/*  {errores.nombre_cliente && (
-                   <span style={{ color: "red", fontSize: "12px" }}>
-                    {errores.nombre_cliente}
-                  </span> 
-                )} */}
+                
                     </td>
                     <td>
                       <input
@@ -468,11 +464,7 @@ const ClientesFiltrados = () => {
                         onChange={handleChange}
                         placeholder="RUT del cliente"
                       />
-                      {/*   {errores.rut_cliente && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    {errores.rut_cliente}
-                  </span>
-                )} */}
+                  
                     </td>
                     <td>
                       <input
@@ -483,11 +475,8 @@ const ClientesFiltrados = () => {
                         onChange={handleChange}
                         placeholder="Teléfono del cliente"
                       />
-                      {/* {errores.telefono_cliente && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    {errores.telefono_cliente}
-                  </span>
-                )} */}
+                   
+               
                     </td>
                     <td>
                       <input
@@ -498,11 +487,7 @@ const ClientesFiltrados = () => {
                         onChange={handleChange}
                         placeholder="ejemplo.123@gmail.com"
                       />
-                      {/*  {errores.email_cliente && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    {errores.email_cliente}
-                  </span>
-                )} */}
+               
                     </td>
                     <td>
                       <input
@@ -512,11 +497,7 @@ const ClientesFiltrados = () => {
                         value={filters.fecha_desde}
                         onChange={handleChange}
                       />
-                      {/* {errores.rango_fechas && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    {errores.rango_fechas}
-                  </span>
-                )} */}
+                  
                     </td>
                     <td>
                       <input
@@ -558,8 +539,8 @@ const ClientesFiltrados = () => {
         {error && <p className="error">{error}</p>}
       </div>
 
-      <div className="clientes-grid">
-        {clientes.length > 0 ? (
+      <div className="clientes-grid" style={{width:"90%"}}>
+        
           <div className="contenedor_botones">
             <button className="rojo botton" onClick={() => limpiarGrilla()}>
               Limpiar grilla
@@ -568,10 +549,8 @@ const ClientesFiltrados = () => {
               Generar Planilla
             </button>
           </div>
-        ) : (
-          ""
-        )}
-        {clientes.length > 0 ? (
+       
+       {/*  {clientes.length > 0 ? ( */}
           <div
             style={{
               overflowY: "auto",
@@ -717,9 +696,9 @@ const ClientesFiltrados = () => {
               </tbody>
             </table>
           </div>
-        ) : (
+      {/*   ) : (
           <p></p>
-        )}
+        )} */}
       </div>
 
       {/* Modal para editar cliente */}

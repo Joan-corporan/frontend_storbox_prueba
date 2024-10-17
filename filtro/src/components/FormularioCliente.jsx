@@ -128,90 +128,134 @@ const FormularioCliente = ({ cerralModalRegistroCliente }) => {
   return (
     <>
     <Navbar/>
-     <div /* className="modal" */>
-          <div className="modal-content">
-           {/*  <span className="close" onClick={cerralModalRegistroCliente}>
-              &times;
-            </span> */}
-            <h4 style={{margin:"5px", textAlign:"center"}}>Crear nuevo cliente</h4>
+   
+          <div className="modal-content-crear-cliente" style={{
+            width: "40%",
+            height:"65vh",
+            margin: "0 auto",
+            padding: "20px",
+            boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+            borderRadius: "5px",
+            backgroundColor: "#f2f2f2",
+            marginTop: "50px",
+            marginBottom: "50px",
+          }}>
+          
+        <h2 style={{ textAlign:"center"}}>Registrar nuevo cliente</h2>
            
-    <form onSubmit={handleSubmit} className="form-cliente">
- 
+            <form onSubmit={handleSubmit} className="form-cliente" style={{display:"flex", justifyContent:"center"}}>
+  <table className="form-table" style={{}}>
+    <tbody>
+      <tr>
+        <td>
+          <label htmlFor="id_sucursal">Sucursal:</label>
+        </td>
+        <td>
+          <select
+            id="id_sucursal"
+            name="id_sucursal"
+            value={cliente.id_sucursal}
+            onChange={handleChange}
+            placeholder="Selecciona una sucursal"
+          >
+            <option disabled value="">
+              Selecciona una sucursal
+            </option>
+            <option value="1">Sucursal 1</option>
+            <option value="2">Sucursal 2</option>
+            <option value="3">Sucursal 3</option>
+          </select>
+         {/*  {errores.id_sucursal && (
+            <span className="error">{errores.id_sucursal}</span>
+          )} */}
+        </td>
+      </tr>
 
-      <div className="form-group">
-        <label>Sucursal</label>
-        <select
-                  id="id_sucursal"
-                  name="id_sucursal"
-                  value={cliente.id_sucursal}
-                  onChange={handleChange}
-                  placeholder="Selecciona una sucursal"
-                >
-                  <option disabled value="">Selecciona una sucursal</option>
-                  <option value="1">Sucursal 1</option>
-                  <option value="2">Sucursal 2</option>
-                  <option value="3">Sucursal 3</option>
-                </select>
-        {errores.id_sucursal && <span style={{ color: 'red', fontSize:"12px" }}>{errores.id_sucursal}</span>}
+      <tr>
+        <td>
+          <label htmlFor="nombre_cliente">Nombre del Cliente:</label>
+        </td>
+        <td>
+          <input
+            type="text"
+            name="nombre_cliente"
+            value={cliente.nombre_cliente}
+            onChange={handleChange}
+            placeholder="Nombre y Apellido"
+          />
+          {/* {errores.nombre_cliente && (
+            <span className="error">{errores.nombre_cliente}</span>
+          )} */}
+        </td>
+      </tr>
 
-      </div>
+      <tr>
+        <td>
+          <label htmlFor="email_cliente">Email:</label>
+        </td>
+        <td>
+          <input
+            type="text"
+            name="email_cliente"
+            value={cliente.email_cliente}
+            onChange={handleChange}
+            placeholder="ejemplo@gmail.com"
+          />
+          {/* {errores.email_cliente && (
+            <span className="error">{errores.email_cliente}</span>
+          )} */}
+        </td>
+      </tr>
 
-      <div className="form-group">
-        <label>Nombre del Cliente</label>
-        <input
-          type="text"
-          name="nombre_cliente"
-          value={cliente.nombre_cliente}
-          onChange={handleChange}
-          placeholder='Nombre y Apellido'
-          
-        />
-        {errores.nombre_cliente && <span style={{ color: 'red', fontSize:"12px" }}>{errores.nombre_cliente}</span>}
-      </div>
+      <tr>
+        <td>
+          <label htmlFor="telefono_cliente">Teléfono:</label>
+        </td>
+        <td>
+          <input
+            type="text"
+            name="telefono_cliente"
+            value={cliente.telefono_cliente}
+            onChange={handleChange}
+            placeholder="+56912345678"
+          />
+        {/*   {errores.telefono_cliente && (
+            <span className="error">{errores.telefono_cliente}</span>
+          )} */}
+        </td>
+      </tr>
 
-      <div className="form-group">
-        <label>Email</label>
-        <input
-          type="text"
-          name="email_cliente"
-          value={cliente.email_cliente}
-          onChange={handleChange}
-          placeholder='ejemplo@gmail.com'
-          
-        />
-        {errores.email_cliente && <span style={{ color: 'red', fontSize:"12px" }}>{errores.email_cliente}</span>}
-      </div>
+      <tr>
+        <td>
+          <label htmlFor="rut_cliente">RUT del Cliente:</label>
+        </td>
+        <td>
+          <input
+            type="text"
+            name="rut_cliente"
+            value={cliente.rut_cliente}
+            onChange={handleChange}
+            placeholder="67654326-7"
+          />
+          {/* {errores.rut_cliente && (
+            <span className="error">{errores.rut_cliente}</span>
+          )} */}
+        </td>
+      </tr>
 
-      <div className="form-group">
-        <label>Teléfono</label>
-        <input
-          type="text"
-          name="telefono_cliente"
-          value={cliente.telefono_cliente}
-          onChange={handleChange}
-          placeholder='+56912345678'
-          
-        />
-        {errores.telefono_cliente && <span style={{ color: 'red', fontSize:"12px" }}>{errores.telefono_cliente}</span>}
-      </div>
+      <tr>
+        <td colSpan="2" className="button-row">
+          <button type="submit"  style={{ backgroundColor: "#15616D", marginTop: "10px" }} className="btn-crear azul">
+            Crear Cliente
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
 
-      <div className="form-group">
-        <label>RUT del Cliente</label>
-        <input
-          type="text"
-          name="rut_cliente"
-          value={cliente.rut_cliente}
-          onChange={handleChange}
-          placeholder='67654326-7'
-          
-        />
-        {errores.rut_cliente && <span style={{ color: 'red', fontSize:"12px"}}>{errores.rut_cliente}</span>}
-      </div>
-
-      <button  type="submit" className="btn-crear azul">Crear Cliente</button>
-    </form>  
           </div>
-        </div>
+       
     
     </>
   );

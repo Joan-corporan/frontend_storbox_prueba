@@ -1,77 +1,4 @@
-/* /* Estilos para el contenedor general 
-.clientes-filtrados-container {
-  width: 100%;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f4f4f4;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-}
 
-/* Estilo para el formulario 
-.filter-form {
-  display: flex;
-  flex-direction: row; /* Alinear elementos verticalmente 
-  gap: 10px;
-  max-width: 800px;
-  width: 100%;
-}
-
-/* Alinear cada grupo de formulario en una fila 
-.form-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.form-group label {
-  font-size: 14px;
-  font-weight: 500;
-  min-width: 100px;
-}
-
-.form-group select, .form-group input {
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100%;
-  max-width: 300px;
-  box-sizing: border-box;
-}
-
-/* Estilo para el mensaje de error 
-span {
-  font-size: 12px;
-  color: red;
-}
-
-/* Botones 
-.btn-submit {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn-submit:hover {
-  background-color: #0056b3;
-}
-
-
-
-.Naranja {
-  background-color: orangered;
-}
-
-
-
-/* Estilos responsivos para pantallas pequeñas 
-Estilos para el modal  */ 
 .clientes-filtrados-container{
   background-color: #ffecd1;
   border-radius: 5px;
@@ -160,4 +87,14 @@ Estilos para el modal  */
     font-size: 24px;
     color: #aaa;
   }
+.modal-content-crear-cliente tbody {
+display: flex;
+flex-direction: column;
 
+}
+.modal-content-crear-cliente tr {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  
+  }
